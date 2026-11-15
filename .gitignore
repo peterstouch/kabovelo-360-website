@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+**/.DS_Store
+# Original full-size photos (64 MB) — the site uses optimised copies in assets/images/team/
+assets/images/director:sessions/

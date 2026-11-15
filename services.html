@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse KABOVELO 360 service packages across film production, film education, fashion, social impact and marketing.">
+    <title>Services &amp; Packages | KABOVELO 360</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./assets/js/layout.js"></script>
+    <script src="./assets/js/data.js" defer></script>
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body data-page="services" class="bg-obsidian text-greyLight font-sans selection:bg-armyGreenBright selection:text-obsidian antialiased overflow-x-hidden">
+
+    <div id="pageLoader" role="status" aria-label="Loading">
+        <div class="loader-mark"><div class="loader-ring"></div><div class="loader-ring inner"></div><div class="loader-core">360</div></div>
+        <div class="loader-word">KABOVELO</div>
+        <div class="loader-bar"></div>
+    </div>
+
+    <div id="siteHeader"></div>
+
+    <main>
+        <section class="relative flex items-center pt-32 pb-14 sm:pb-16 overflow-hidden">
+            <div class="absolute inset-0">
+                <img src="./assets/images/marketing-lab.jpg" alt="" class="w-full h-full object-cover opacity-25">
+                <div class="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/90 to-obsidian/55"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(#2E352F_1px,transparent_1px)] [background-size:32px_32px] opacity-20"></div>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="max-w-3xl">
+                    <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">End-To-End Catalog</span>
+                    <h1 class="font-serif text-4xl sm:text-6xl font-black tracking-tight text-white mt-3 mb-5 leading-tight">Packaged <span class="army-gradient-text">Services</span></h1>
+                    <p class="max-w-2xl text-base sm:text-lg text-greyLight font-light leading-relaxed">26 services across five divisions, each with Starter, Professional and Enterprise tiers. Open any service to compare packages, book it, or add it to your ecosystem package.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pb-20 sm:pb-24 bg-obsidian">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="glass-panel rounded-2xl p-4 sm:p-5 border border-charcoalBorder mb-6 flex flex-col md:flex-row md:items-center gap-3">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-greyMuted text-xs"></i>
+                        <label for="serviceSearch" class="sr-only">Search services</label>
+                        <input type="search" id="serviceSearch" placeholder="Search services, e.g. editing, runway, branding…" class="w-full bg-tacticalBlack/90 border border-charcoalBorder rounded-xl pl-9 pr-4 py-3 text-sm text-white placeholder-greyMuted focus:outline-none focus:border-armyGreenLight">
+                    </div>
+                    <label for="divisionFilter" class="sr-only">Filter by division</label>
+                    <select id="divisionFilter" class="w-full md:w-60 bg-tacticalBlack/90 border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-greyLight focus:outline-none focus:border-armyGreenLight">
+                        <option value="all">All Ecosystem Divisions</option>
+                        <option value="Film Farm">Film Farm</option>
+                        <option value="Film Academy">Film Academy</option>
+                        <option value="Fashion Avenue">Fashion Avenue</option>
+                        <option value="Hope Foundation">Hope Foundation</option>
+                        <option value="Marketing Lab">Marketing Lab</option>
+                    </select>
+                    <button type="button" id="clearFilters" class="px-4 py-3 rounded-xl glass-card text-xs font-bold uppercase tracking-wider text-greyLight hover:text-white whitespace-nowrap"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0 lg:flex-wrap" id="serviceTabs"></div>
+
+                <p class="text-xs text-greyMuted mb-5" id="serviceCount" aria-live="polite"></p>
+                <div id="servicesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"></div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-gradient-to-r from-armyGreenDark via-tacticalBlack to-obsidian border-y border-charcoalBorder">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mb-5">Need more than one service?</h2>
+                <p class="max-w-2xl mx-auto text-sm sm:text-base text-greyMuted leading-relaxed mb-8">Combine services from different divisions in the Synergy Builder and unlock up to 25% off.</p>
+                <a href="./synergy.html" class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-all border border-armyGreenLight/30">Open Synergy Builder <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating "my package" shortcut — appears once something is added -->
+    <div class="hidden fixed bottom-5 left-5 z-40">
+        <a href="./synergy.html" class="flex items-center gap-2 px-4 py-3 rounded-full bg-armyGreenBright text-white text-xs font-bold uppercase tracking-wider shadow-2xl border border-armyGreenLight/40 hover:scale-105 transition-transform">
+            <i class="fa-solid fa-layer-group"></i> My Package <span id="packageCount" class="bg-obsidian/40 rounded-full px-2 py-0.5">0</span>
+        </a>
+    </div>
+
+    <div id="siteFooter"></div>
+</body>
+</html>
