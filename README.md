@@ -13,7 +13,9 @@ A static multi-page website built with Tailwind CSS and vanilla JavaScript.
 | Our Work | `work.html` | Demo case studies, one tab per division. Deep-link with `work.html#fashion-avenue` |
 | Synergy Builder | `synergy.html` | Multi-division package builder with discounts |
 | Impact | `impact.html` | Counters, Hope Foundation stories & programs, partners |
-| Contact | `contact.html` | Contact details, form (pre-filled from service/work buttons), FAQ |
+| Contact | `contact.html` | Contact details, form (sent to admin@ by email), FAQ |
+| Enroll | `enroll.html` | Film Academy online enrollment: course, level, intake, student details, mobile money payment |
+| Checkout | `checkout.html` | Book & pay for services/packages with mobile money (`checkout.html?items=ff-1:starter,ml-4:starter:2`) |
 | Legal | `legal.html` | Privacy / Terms / Grant Transparency tabs (`#privacy`, `#terms`, `#grants`) |
 
 ## Project structure
@@ -53,5 +55,46 @@ npm run watch      # live while editing
 
 ## Notes
 
-- The contact and proposal forms are front-end only (they show a confirmation). Connect them to a form service (e.g. Formspree, Netlify Forms) or your backend before launch.
 - `assets/images/director:sessions/` holds the original full-size photos (3–8 MB each). The site uses the optimised copies in `assets/images/team/`, so that folder does not need to be uploaded.
+
+## Online payments (Lipila mobile money)
+
+The website (GitHub Pages) talks to a small API in `api/` that runs on **Cloudflare Workers**.
+It creates the mobile money request with **Lipila**, stores orders in **Cloudflare D1**, and emails
+receipts and admin alerts through **Resend** from admin@kabovelo360.co.zm.
+
+Flow: customer fills the form → API prices the order from `api/src/catalog.json` → Lipila sends a PIN
+prompt to the customer's phone (MTN / Airtel / Zamtel) → the page checks the status every few seconds →
+on success the customer sees a receipt and gets an email with the purchase details and instructions to
+send their Proof of Payment (POP) to admin@kabovelo360.co.zm.
+
+### Prices
+
+Prices live in `assets/js/data.js` (Kwacha). After editing them run `npm run build` — this also
+regenerates `api/src/catalog.json`, which the API uses — then redeploy the API (`cd api && npm run deploy`).
+Payments above `SITE.onlineLimit` / `ONLINE_LIMIT` (K150,000) show "Request Quote" instead of "Pay".
+
+### Run locally
+
+```bash
+npm run build
+cd api && npm install && npm run db:init && npm run dev   # API on http://localhost:8787 (test mode)
+npm start                                                   # in another terminal, site on http://localhost:8000
+```
+
+In test mode no real money moves. Test numbers: `0977000002` fails, `0977000003` stays pending,
+any other valid number succeeds after ~8 seconds.
+
+### Go live
+
+1. `cd api && npx wrangler login`
+2. `npx wrangler d1 create kabovelo-orders` → put the `database_id` into `api/wrangler.toml`
+3. `npm run db:init:remote`
+4. `npm run deploy` → note the URL (e.g. `https://kabovelo-api.<you>.workers.dev`) and put it in
+   `API_PUBLIC_URL` (wrangler.toml) and `SITE.apiBase` (assets/js/data.js)
+5. Secrets: `npx wrangler secret put RESEND_API_KEY`, then (after signing up with Lipila)
+   `npx wrangler secret put LIPILA_API_KEY` and set `LIPILA_MODE` to `sandbox`, later `live`
+6. Lipila dashboard: callback URL = `<API URL>/api/webhooks/lipila`
+7. Resend: verify the domain kabovelo360.co.zm (add the DNS records Resend shows at Infratel)
+
+Useful: `npm run orders` (latest orders), `npm run logs` (live API logs).

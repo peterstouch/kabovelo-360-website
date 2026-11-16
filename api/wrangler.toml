@@ -1,0 +1,28 @@
+name = "kabovelo-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kabovelo-orders"
+# Replaced with the real id after `npx wrangler d1 create kabovelo-orders`
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[vars]
+# mock | sandbox | live  (sandbox/live also need the LIPILA_API_KEY secret)
+LIPILA_MODE = "mock"
+# Largest single mobile money payment in ZMW — keep in sync with SITE.onlineLimit in assets/js/data.js
+ONLINE_LIMIT = "150000"
+ADMIN_EMAIL = "admin@kabovelo360.co.zm"
+ADMIN_PHONE = "+260 979 813 471"
+FROM_EMAIL = "KABOVELO 360 <admin@kabovelo360.co.zm>"
+SITE_LOCATION = "Lusaka, Zambia"
+PUBLIC_SITE_URL = "https://kabovelo360.co.zm"
+# This Worker's own public URL (Lipila sends payment callbacks here)
+API_PUBLIC_URL = "https://kabovelo-api.YOUR-SUBDOMAIN.workers.dev"
+ALLOWED_ORIGINS = "https://kabovelo360.co.zm,https://www.kabovelo360.co.zm,https://peterstouch.github.io,http://localhost:8000,http://localhost:8931"
+
+# Secrets (never put these in this file) — set with:
+#   npx wrangler secret put LIPILA_API_KEY
+#   npx wrangler secret put LIPILA_WEBHOOK_SECRET   (optional)
+#   npx wrangler secret put RESEND_API_KEY

@@ -15,6 +15,15 @@ function storageSet(key, value) {
     try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable — selection stays in memory */ }
 }
 
+// Where a package's button leads: enrollment, online checkout, grant application or quote request
+function tierAction(service, tierKey) {
+    const pkg = service.packages[tierKey];
+    if (pkg.payable === false) return { href: contactUrl({ division: service.division, service: service.title, package: pkg.name }), label: 'Apply', icon: 'fa-file-signature' };
+    if (!isPayableOnline(pkg)) return { href: contactUrl({ division: service.division, service: service.title, package: pkg.name }), label: 'Request Quote', icon: 'fa-file-invoice' };
+    if (service.division === 'Film Academy') return { href: `./enroll.html?course=${service.id}&tier=${tierKey}`, label: 'Enroll & Pay', icon: 'fa-graduation-cap' };
+    return { href: `./checkout.html?items=${service.id}:${tierKey}`, label: 'Book & Pay', icon: 'fa-mobile-screen-button' };
+}
+
 function contactUrl(params) {
     const q = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => { if (v) q.set(k, v); });
@@ -82,7 +91,7 @@ function serviceCardHTML(s) {
             <div class="px-5 sm:px-6 pb-5 pt-4 border-t border-charcoalBorder/50 flex items-center justify-between gap-3">
                 <div>
                     <span class="text-[10px] text-greyMuted uppercase block">Starting Tier</span>
-                    <span class="text-sm font-bold text-armyGreenLight font-serif">${s.packages.starter.price}</span>
+                    <span class="text-sm font-bold text-armyGreenLight font-serif">${formatPrice(s.packages.starter, { short: true })}</span>
                 </div>
                 <button type="button" onclick="openServiceModal('${s.id}')" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-armyGreenBright text-white font-semibold text-xs uppercase tracking-wider transition-all border border-white/10 whitespace-nowrap">
                     View Packages &rarr;
@@ -222,7 +231,11 @@ function openServiceModal(serviceId) {
     document.getElementById('modalTitle').innerText = service.title;
     document.getElementById('modalDescription').innerText = service.fullDesc;
     document.getElementById('modalTurnaround').innerText = `Estimated Turnaround: ${service.turnaround}. Fully integrable with other KABOVELO 360 divisions.`;
-    document.getElementById('modalBookLink').href = contactUrl({ division: service.division, service: service.title });
+    const bookTier = isPayableOnline(service.packages.pro) ? 'pro' : 'starter';
+    const book = tierAction(service, bookTier);
+    const bookLink = document.getElementById('modalBookLink');
+    bookLink.href = book.href;
+    bookLink.innerHTML = `<i class="fa-solid ${book.icon} mr-1"></i> ${book.label}`;
 
     const tiers = [
         { key: 'starter', label: 'Starter Tier', featured: false },
@@ -237,12 +250,12 @@ function openServiceModal(serviceId) {
             <div>
                 <span class="text-[10px] ${t.featured ? 'text-armyGreenLight' : 'text-greyMuted'} font-bold uppercase">${t.label}</span>
                 <h5 class="font-serif font-bold text-white text-base mt-1">${pkg.name}</h5>
-                <p class="text-sm font-bold text-armyGreenLight mt-1">${pkg.price}</p>
+                <p class="text-sm font-bold text-armyGreenLight mt-1">${formatPrice(pkg)}</p>
                 <ul class="mt-3 space-y-1.5 text-[11px] text-greyLight">
                     ${pkg.items.map(item => `<li class="flex gap-1.5"><i class="fa-solid fa-check text-armyGreenLight mt-0.5"></i><span>${item}</span></li>`).join('')}
                 </ul>
             </div>
-            <a href="${contactUrl({ division: service.division, service: service.title, package: pkg.name })}" class="mt-4 block text-center py-2 rounded-lg bg-white/5 hover:bg-armyGreenBright border border-white/10 text-[11px] font-bold uppercase tracking-wider text-white transition-colors">Choose ${pkg.name}</a>
+            <a href="${tierAction(service, t.key).href}" class="mt-4 block text-center py-2.5 rounded-lg ${t.featured ? 'bg-armyGreenBright hover:bg-armyGreenLight' : 'bg-white/5 hover:bg-armyGreenBright'} border border-white/10 text-[11px] font-bold uppercase tracking-wider text-white transition-colors"><i class="fa-solid ${tierAction(service, t.key).icon} mr-1"></i> ${tierAction(service, t.key).label}</a>
         </div>`;
     }).join('');
 
@@ -403,13 +416,14 @@ function switchDivision(divisionKey, opts = {}) {
                         <h4 class="font-serif text-xl font-bold text-white">Engage ${divData.name}</h4>
                         <p class="text-xs text-greyMuted leading-relaxed">Book a division-specific consultation or integrate this pillar into a multi-disciplinary package.</p>
                         <div class="space-y-3">
+                            ${divisionKey === 'film-academy' ? `<a href="./enroll.html" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll Online &amp; Pay</a>` : `<a href="./services.html?division=${encodeURIComponent(divData.name)}" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; Pay Online</a>`}
                             <a href="./services.html?division=${encodeURIComponent(divData.name)}" class="block text-center w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
                                 Explore All ${divData.services.length} ${divData.name} Packages
                             </a>
                             <a href="./work.html#${divData.id}" class="block text-center w-full py-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
                                 See ${divData.name} Work
                             </a>
-                            <a href="${contactUrl({ division: divData.name })}" class="block text-center w-full py-3 rounded-xl bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all border border-armyGreenLight/30">
+                            <a href="${contactUrl({ division: divData.name })}" class="block text-center w-full py-3 rounded-xl glass-card text-greyLight hover:text-white font-semibold text-xs uppercase tracking-wider transition-all">
                                 Request Division Consultation
                             </a>
                         </div>
@@ -651,7 +665,7 @@ function renderSynergyAccordion() {
                         <div class="flex-1 min-w-0">
                             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-0.5">
                                 <span class="text-xs font-bold text-white">${s.title}</span>
-                                <span class="text-[10px] font-mono text-armyGreenLight">from ${s.packages.starter.price}</span>
+                                <span class="text-[10px] font-mono text-armyGreenLight">from ${formatPrice(s.packages.starter, { short: true }).replace('from ', '')}</span>
                             </div>
                             <p class="text-[11px] text-greyMuted mt-0.5">${s.shortDesc}</p>
                         </div>
@@ -713,7 +727,7 @@ function updateSynergySummary() {
             <div class="flex items-center justify-between p-2.5 rounded-lg glass-card border-charcoalBorder text-xs">
                 <div class="min-w-0 pr-2">
                     <span class="block font-semibold text-white truncate">${s.title}</span>
-                    <span class="text-[9px] text-greyMuted uppercase">${s.division} · from ${s.packages.starter.price}</span>
+                    <span class="text-[9px] text-greyMuted uppercase">${s.division} · from ${formatPrice(s.packages.starter, { short: true }).replace('from ', '')}</span>
                 </div>
                 <button type="button" onclick="toggleServiceSelection('${s.id}')" aria-label="Remove ${s.title}" class="w-8 h-8 rounded-lg text-greyMuted hover:text-rose-400 hover:bg-white/5 flex-shrink-0"><i class="fa-solid fa-xmark"></i></button>
             </div>`).join('');
@@ -739,13 +753,51 @@ function openSynergyProposalModal() {
     openModal('synergyModal');
 }
 
-function handleSynergySubmit(e) {
+async function handleSynergySubmit(e) {
     e.preventDefault();
-    closeModalById('synergyModal');
-    e.target.reset();
-    setSelectedIds([]);
-    renderSynergyAccordion();
-    showToast('Ecosystem blueprint request sent! A director will contact you shortly.');
+    const form = e.target;
+    const btn = form.querySelector('button[type=submit]');
+    const [name, email] = [form.querySelector('input[type=text]').value, form.querySelector('input[type=email]').value];
+    const selected = getSelectedServices();
+    const list = selected.map(s => `• ${s.title} (${s.division})`).join('\n');
+    btn.disabled = true;
+    try {
+        await sendInquiry({
+            name, email, division: 'General Ecosystem', subject: 'Synergy proposal request',
+            message: `Proposal requested for:\n${list}\n\n${form.querySelector('textarea').value}`, website: ''
+        });
+        closeModalById('synergyModal');
+        form.reset();
+        showToast('Proposal request sent! A director will contact you shortly.');
+    } catch (ex) {
+        showToast(ex.message);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+function checkoutSynergyPackage() {
+    const selected = getSelectedServices();
+    if (!selected.length) { showToast('Select at least one service to check out.'); return; }
+    const items = selected.map(s => {
+        const tier = ['starter', 'pro', 'enterprise'].find(k => isPayableOnline(s.packages[k]));
+        return tier ? `${s.id}:${tier}` : null;
+    }).filter(Boolean);
+    if (!items.length) { showToast('These services are above the mobile money limit — please request a proposal instead.'); return; }
+    location.href = `./checkout.html?items=${items.join(',')}`;
+}
+
+// Sends a contact / proposal message through the API
+async function sendInquiry(payload) {
+    let res;
+    try {
+        res = await fetch(`${SITE.apiBase}/api/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    } catch (e) {
+        throw new Error('We could not send your message right now.');
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'We could not send your message right now.');
+    return data;
 }
 
 // ---- Impact page
@@ -782,13 +834,32 @@ function initContact() {
         banner.classList.add('flex');
     }
 
-    document.getElementById('contactForm').addEventListener('submit', (e) => {
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
-        form.classList.add('hidden');
-        document.getElementById('contactSuccess').classList.remove('hidden');
-        showToast('Inquiry sent successfully! Division leads notified.');
-        form.reset();
+        const err = form.querySelector('[data-form-error]');
+        const btn = form.querySelector('button[type=submit]');
+        const f = Object.fromEntries(new FormData(form).entries());
+        const fail = (m) => { err.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-2"></i>${m}`; err.classList.remove('hidden'); };
+        err.classList.add('hidden');
+        if (!f.name || f.name.trim().length < 2) return fail('Please enter your name.');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email || '')) return fail('Please enter a valid email address.');
+        if (!f.message || f.message.trim().length < 5) return fail('Please tell us a little about your request.');
+        const original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="pay-spinner sm"></span> Sending…';
+        try {
+            await sendInquiry(f);
+            form.classList.add('hidden');
+            document.getElementById('contactSuccess').classList.remove('hidden');
+            showToast('Message sent — we will reply within one business day.');
+            form.reset();
+        } catch (ex) {
+            fail(`${ex.message} You can also email <a class="underline" href="mailto:${SITE.email}">${SITE.email}</a> or <a class="underline" href="${SITE.whatsapp}" target="_blank" rel="noopener">WhatsApp us</a>.`);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
     });
     document.getElementById('contactAgain').addEventListener('click', () => {
         document.getElementById('contactSuccess').classList.add('hidden');

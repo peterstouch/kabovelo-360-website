@@ -17,6 +17,7 @@ const NAV_LINKS = [
 
 // Update these with the real social profile URLs
 const SOCIAL_LINKS = [
+    { icon: 'fa-whatsapp', label: 'WhatsApp', href: 'https://wa.me/260979813471' },
     { icon: 'fa-instagram', label: 'Instagram', href: 'https://www.instagram.com/' },
     { icon: 'fa-youtube', label: 'YouTube', href: 'https://www.youtube.com/' },
     { icon: 'fa-linkedin-in', label: 'LinkedIn', href: 'https://www.linkedin.com/' },
@@ -47,19 +48,75 @@ window.addEventListener('error', (e) => {
 // ---------------------------------------------------------------
 // PAGE LOADER
 // ---------------------------------------------------------------
+// First visit in a session gets the full intro; moving between pages is quicker.
 const LOADER_START = Date.now();
-function hidePageLoader() {
+const LOADER_MIN = (() => {
+    try {
+        const seen = sessionStorage.getItem('k360-seen');
+        sessionStorage.setItem('k360-seen', '1');
+        return seen ? 750 : 1700;
+    } catch (e) { return 1200; }
+})();
+let loaderDone = false;
+let pageReady = false;
+
+// Progress counter: eases towards 90% while loading, completes when the page is ready
+(function runLoaderProgress() {
+    const tick = () => {
+        if (loaderDone) return;
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            const t = Math.min(1, (Date.now() - LOADER_START) / LOADER_MIN);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const pct = pageReady ? Math.round(eased * 100) : Math.min(90, Math.round(eased * 90));
+            const bar = loader.querySelector('.loader-bar span');
+            const label = loader.querySelector('.loader-pct');
+            if (bar) bar.style.width = pct + '%';
+            if (label) label.textContent = pct + '%';
+            if (pageReady && t >= 1) { finishLoader(); return; }
+        }
+        requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+})();
+
+function finishLoader() {
+    if (loaderDone) return;
+    loaderDone = true;
     const loader = document.getElementById('pageLoader');
-    if (!loader) return;
-    const wait = Math.max(0, 450 - (Date.now() - LOADER_START)); // brief minimum so it doesn't flicker
-    setTimeout(() => {
-        loader.classList.remove('leaving');
-        loader.classList.add('loaded');
-    }, wait);
+    if (loader) {
+        const bar = loader.querySelector('.loader-bar span');
+        const label = loader.querySelector('.loader-pct');
+        if (bar) bar.style.width = '100%';
+        if (label) label.textContent = '100%';
+        setTimeout(() => { loader.classList.remove('leaving'); loader.classList.add('loaded'); }, 180);
+    }
+    setTimeout(playIntro, 380);
 }
+
+function hidePageLoader() { pageReady = true; }
 window.addEventListener('load', hidePageLoader);
-setTimeout(hidePageLoader, 3000); // never wait on slow third-party assets
-window.addEventListener('pageshow', (e) => { if (e.persisted) hidePageLoader(); });
+setTimeout(hidePageLoader, 3500); // never wait on slow third-party assets
+window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+        const loader = document.getElementById('pageLoader');
+        if (loader) { loader.classList.remove('leaving'); loader.classList.add('loaded'); }
+    }
+});
+
+// Hero entrance: the first section's key elements rise in, one after another
+function prepareIntro() {
+    const hero = document.querySelector('main > section');
+    if (!hero) return;
+    const els = hero.querySelectorAll('h1, h1 ~ p, .eyebrow, .animate-float, h1 ~ div, .steps, span.text-xs.font-bold.uppercase');
+    [...els].filter(el => !el.closest('.intro')).slice(0, 7).forEach((el, i) => {
+        el.classList.add('intro');
+        el.style.setProperty('--d', `${i * 0.11}s`);
+    });
+}
+function playIntro() {
+    document.querySelectorAll('.intro').forEach(el => el.classList.add('intro-in'));
+}
 
 // ---------------------------------------------------------------
 // HEADER & FOOTER
@@ -96,8 +153,8 @@ function buildHeader(activePage) {
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="./synergy.html" class="hidden sm:inline-flex relative px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-armyGreen to-armyGreenBright text-white shadow-lg hover:shadow-armyGreenBright/30 transition-all duration-300 hover:scale-105 active:scale-95 border border-armyGreenLight/30 whitespace-nowrap">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-armyGreenLight"></i> Build Package</span>
+                <a href="./enroll.html" class="hidden sm:inline-flex relative px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-armyGreen to-armyGreenBright text-white shadow-lg hover:shadow-armyGreenBright/30 transition-all duration-300 hover:-translate-y-0.5 border border-armyGreenLight/30 whitespace-nowrap ${activePage === 'enroll' ? 'ring-1 ring-armyGreenLight' : ''}">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-armyGreenLight"></i> Enroll Now</span>
                 </a>
                 <button id="mobileMenuBtn" type="button" class="xl:hidden w-11 h-11 rounded-xl flex items-center justify-center text-greyLight hover:text-white hover:bg-white/5 text-xl" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
                     <i class="fa-solid fa-bars-staggered"></i>
@@ -107,9 +164,14 @@ function buildHeader(activePage) {
 
         <nav id="mobileMenu" class="hidden xl:hidden glass-panel border-t border-charcoalBorder px-4 sm:px-6 pb-6 pt-2 max-h-[calc(100vh-5rem)] overflow-y-auto" aria-label="Mobile navigation">
             ${mobileLinks}
-            <a href="./synergy.html" class="mt-5 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-armyGreen to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider">
-                <i class="fa-solid fa-layer-group"></i> Build Ecosystem Package
-            </a>
+            <div class="mt-5 grid grid-cols-2 gap-3">
+                <a href="./enroll.html" class="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-armyGreen to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-graduation-cap"></i> Enroll Now
+                </a>
+                <a href="./services.html" class="flex items-center justify-center gap-2 py-3.5 rounded-xl glass-card text-white font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Book &amp; Pay
+                </a>
+            </div>
         </nav>
     </header>`;
 }
@@ -126,6 +188,9 @@ function buildFooter() {
                     </a>
                     <p class="text-xs text-greyMuted leading-relaxed max-w-xs">
                         The high-performance creative ecosystem uniting film, fashion, education, social impact, and brand marketing.
+                    </p>
+                    <p class="text-[11px] text-greyMuted flex flex-wrap gap-2 pt-1">
+                        <span class="momo-chip" style="--c:#FFCB05">MTN MoMo</span><span class="momo-chip" style="--c:#E40000">Airtel Money</span><span class="momo-chip" style="--c:#00A651">Zamtel</span>
                     </p>
                     <div class="flex gap-3 text-greyMuted text-base pt-1">
                         ${SOCIAL_LINKS.map(s => `<a href="${s.href}" target="_blank" rel="noopener" aria-label="${s.label}" class="w-10 h-10 rounded-lg glass-card flex items-center justify-center hover:text-armyGreenLight hover:border-armyGreenLight/50"><i class="fa-brands ${s.icon}"></i></a>`).join('')}
@@ -149,9 +214,10 @@ function buildFooter() {
                 <div>
                     <h5 class="text-xs font-bold uppercase tracking-widest text-armyGreenLight mb-4">Get in Touch</h5>
                     <ul class="space-y-3 text-sm text-greyMuted">
-                        <li class="flex gap-3"><i class="fa-solid fa-location-dot text-armyGreenLight mt-1"></i><span>Kabovelo 360 Studios &amp; Creative Campus, Innovation Boulevard</span></li>
-                        <li class="flex gap-3"><i class="fa-solid fa-envelope text-armyGreenLight mt-1"></i><a href="mailto:connect@kabovelo360.com" class="hover:text-white break-all">connect@kabovelo360.com</a></li>
-                        <li class="flex gap-3"><i class="fa-solid fa-phone text-armyGreenLight mt-1"></i><a href="tel:+18003605226" class="hover:text-white">+1 (800) 360-5226</a></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-location-dot text-armyGreenLight mt-1"></i><span>KABOVELO 360 Studios, Lusaka, Zambia</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-envelope text-armyGreenLight mt-1"></i><a href="mailto:admin@kabovelo360.co.zm" class="hover:text-white break-all">admin@kabovelo360.co.zm</a></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-phone text-armyGreenLight mt-1"></i><a href="tel:+260979813471" class="hover:text-white">+260 979 813 471</a></li>
+                        <li class="flex gap-3"><i class="fa-brands fa-whatsapp text-armyGreenLight mt-1"></i><a href="https://wa.me/260979813471" target="_blank" rel="noopener" class="hover:text-white">WhatsApp us</a></li>
                     </ul>
                     <a href="./contact.html" class="inline-flex items-center gap-2 mt-5 text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white">Contact page <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
@@ -184,6 +250,7 @@ function setupHeader() {
     const onScroll = () => {
         const scrolled = window.scrollY > 40;
         header.classList.toggle('bg-obsidian/95', scrolled);
+        header.classList.toggle('is-scrolled', scrolled);
         header.classList.toggle('shadow-2xl', scrolled);
         if (backToTop) {
             const show = window.scrollY > 600;
@@ -225,7 +292,14 @@ function setupPageTransitions() {
         if (url.pathname === location.pathname) return;
         e.preventDefault();
         const loader = document.getElementById('pageLoader');
-        if (loader) { loader.classList.remove('loaded'); loader.classList.add('leaving'); }
+        if (loader) {
+            const bar = loader.querySelector('.loader-bar span');
+            const label = loader.querySelector('.loader-pct');
+            if (bar) bar.style.width = '0%';
+            if (label) label.textContent = '';
+            loader.classList.remove('loaded');
+            loader.classList.add('leaving');
+        }
         setTimeout(() => { location.href = url.href; }, 260);
     });
 }
@@ -283,10 +357,19 @@ function setupReveal(root = document) {
     if (!('IntersectionObserver' in window)) { items.forEach(i => i.classList.add('is-visible')); return; }
     const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                el.classList.add('is-visible');
+                io.unobserve(el);
+                setTimeout(() => { el.style.transitionDelay = ''; }, 1200); // keep hover effects instant
+            }
         });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    items.forEach(i => io.observe(i));
+    items.forEach(i => {
+        const siblings = [...i.parentElement.children].filter(c => c.classList.contains('reveal'));
+        if (siblings.length > 1) i.style.transitionDelay = `${(siblings.indexOf(i) % 4) * 90}ms`;
+        io.observe(i);
+    });
 }
 
 function initCounters() {
@@ -294,10 +377,12 @@ function initCounters() {
     if (!counters.length) return;
     const run = (counter) => {
         const target = +counter.getAttribute('data-target');
+        const decimals = +(counter.getAttribute('data-decimals') || 0);
         const start = performance.now();
         const step = (now) => {
-            const p = Math.min((now - start) / 1500, 1);
-            counter.innerText = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+            const p = Math.min((now - start) / 1800, 1);
+            const v = target * (1 - Math.pow(1 - p, 3));
+            counter.innerText = decimals ? v.toFixed(decimals) : Math.round(v).toLocaleString();
             if (p < 1) requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
@@ -320,4 +405,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (footerSlot) footerSlot.outerHTML = buildFooter();
     setupHeader();
     setupPageTransitions();
+    prepareIntro();
 });

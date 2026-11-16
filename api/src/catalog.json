@@ -1,0 +1,630 @@
+{
+  "generatedFrom": "assets/js/data.js",
+  "onlineLimit": 150000,
+  "services": {
+    "ff-1": {
+      "title": "Pre-Production & Script Development",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "Indie Concept",
+          "price": 62500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Feature Ready",
+          "price": 162500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "360 Franchise",
+          "price": 300000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ff-2": {
+      "title": "Full Feature Film & Series Production",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "Short Film Unit",
+          "price": 375000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Commercial Series",
+          "price": 1125000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Theatrical Feature",
+          "price": 3000000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ff-3": {
+      "title": "Cinema Equipment & Studio Rental",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "Solo Filmmaker Kit",
+          "price": 19000,
+          "unit": "day",
+          "payable": true
+        },
+        "pro": {
+          "name": "Studio Production Suite",
+          "price": 62500,
+          "unit": "day",
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Master Fleet",
+          "price": 175000,
+          "unit": "week",
+          "payable": true
+        }
+      }
+    },
+    "ff-4": {
+      "title": "Post-Production & VFX Suite",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "Color & Edit Polish",
+          "price": 75000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "VFX Heavy Package",
+          "price": 237500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Master Feature Suite",
+          "price": 625000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ff-5": {
+      "title": "Sound Design & Cinematic Scoring",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "Indie Score",
+          "price": 45000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Broadcast Surround",
+          "price": 120000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Orchestral Atmos",
+          "price": 375000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ff-6": {
+      "title": "Location Scouting & Permitting",
+      "division": "Film Farm",
+      "tiers": {
+        "starter": {
+          "name": "City Permit Pack",
+          "price": 30000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Full Scouting Unit",
+          "price": 87500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Expedition Logistics",
+          "price": 200000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fa-1": {
+      "title": "Screenwriting & Directing Masterclasses",
+      "division": "Film Academy",
+      "tiers": {
+        "starter": {
+          "name": "Weekend Bootcamp",
+          "price": 12500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Director Cohort",
+          "price": 47500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Executive Masterclass",
+          "price": 112500,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fa-2": {
+      "title": "Cinematography & Lighting Workshops",
+      "division": "Film Academy",
+      "tiers": {
+        "starter": {
+          "name": "Camera Fundamentals",
+          "price": 16000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Advanced Cinematographer",
+          "price": 55000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "DP Fellowship",
+          "price": 125000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fa-3": {
+      "title": "Method Acting for Screen",
+      "division": "Film Academy",
+      "tiers": {
+        "starter": {
+          "name": "Screen Essentials",
+          "price": 14000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Professional Actor",
+          "price": 44000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Lead Artist Prep",
+          "price": 95000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fa-4": {
+      "title": "Editing & VFX Certification",
+      "division": "Film Academy",
+      "tiers": {
+        "starter": {
+          "name": "NLE Fundamentals",
+          "price": 17500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Pro Post Specialist",
+          "price": 60000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Virtual Prod Master",
+          "price": 137500,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fa-5": {
+      "title": "Youth Media Mentorship Program",
+      "division": "Film Academy",
+      "tiers": {
+        "starter": {
+          "name": "Sponsored Youth",
+          "price": 0,
+          "unit": null,
+          "payable": false
+        },
+        "pro": {
+          "name": "School Academy Hub",
+          "price": 75000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Corporate Social Partner",
+          "price": 250000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fav-1": {
+      "title": "Film Costume Design & Wardrobe",
+      "division": "Fashion Avenue",
+      "tiers": {
+        "starter": {
+          "name": "Indie Wardrobe",
+          "price": 87500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Feature Film Wardrobe",
+          "price": 300000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Blockbuster Couture",
+          "price": 875000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fav-2": {
+      "title": "High Fashion & Runway Collections",
+      "division": "Fashion Avenue",
+      "tiers": {
+        "starter": {
+          "name": "Capsule Collection",
+          "price": 125000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Runway Showcase",
+          "price": 450000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Global Fashion Week",
+          "price": 1250000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fav-3": {
+      "title": "Personal Styling & Image Consulting",
+      "division": "Fashion Avenue",
+      "tiers": {
+        "starter": {
+          "name": "Executive Refresh",
+          "price": 37500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Red Carpet Glamour",
+          "price": 105000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Annual Identity Retainer",
+          "price": 300000,
+          "unit": "year",
+          "payable": true
+        }
+      }
+    },
+    "fav-4": {
+      "title": "Model Coaching & Portfolio",
+      "division": "Fashion Avenue",
+      "tiers": {
+        "starter": {
+          "name": "Portfolio Essentials",
+          "price": 21000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Agency Ready",
+          "price": 52500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Supermodel Development",
+          "price": 120000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "fav-5": {
+      "title": "Sustainable Apparel Innovation",
+      "division": "Fashion Avenue",
+      "tiers": {
+        "starter": {
+          "name": "Eco Material Audit",
+          "price": 50000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Sustainable Prototype",
+          "price": 162500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Ethical Brand Launch",
+          "price": 500000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "hf-1": {
+      "title": "Creative Arts Youth Empowerment",
+      "division": "Hope Foundation",
+      "tiers": {
+        "starter": {
+          "name": "Community Hub Grant",
+          "price": 0,
+          "unit": null,
+          "payable": false
+        },
+        "pro": {
+          "name": "Regional Youth Program",
+          "price": 125000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Ecosystem Creative Center",
+          "price": 625000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "hf-2": {
+      "title": "Film & Media Scholarships",
+      "division": "Hope Foundation",
+      "tiers": {
+        "starter": {
+          "name": "Single Scholar Support",
+          "price": 62500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Cohort Patron",
+          "price": 250000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Endowment Fund Partner",
+          "price": 1250000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "hf-3": {
+      "title": "Community Outreach Screenings",
+      "division": "Hope Foundation",
+      "tiers": {
+        "starter": {
+          "name": "Local Cinema Night",
+          "price": 37500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Regional Impact Tour",
+          "price": 150000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "National Cinema Outreach",
+          "price": 500000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "hf-4": {
+      "title": "Social Impact Campaigns",
+      "division": "Hope Foundation",
+      "tiers": {
+        "starter": {
+          "name": "Advocacy Spot",
+          "price": 100000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Global Impact Film",
+          "price": 375000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Movement Infrastructure",
+          "price": 1125000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "hf-5": {
+      "title": "Women in Creative Leadership Grants",
+      "division": "Hope Foundation",
+      "tiers": {
+        "starter": {
+          "name": "Seed Grant Partner",
+          "price": 75000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Production Grant Sponsor",
+          "price": 300000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Leadership Incubator",
+          "price": 1000000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ml-1": {
+      "title": "360° Brand Strategy & Identity",
+      "division": "Marketing Lab",
+      "tiers": {
+        "starter": {
+          "name": "Brand Launchpack",
+          "price": 70000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "360° Corporate Brand",
+          "price": 187500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Global Brand Rebrand",
+          "price": 550000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    },
+    "ml-2": {
+      "title": "Digital Marketing & Performance Media",
+      "division": "Marketing Lab",
+      "tiers": {
+        "starter": {
+          "name": "Growth Engine",
+          "price": 50000,
+          "unit": "month",
+          "payable": true
+        },
+        "pro": {
+          "name": "Scale Architecture",
+          "price": 137500,
+          "unit": "month",
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Enterprise Performance",
+          "price": 350000,
+          "unit": "month",
+          "payable": true
+        }
+      }
+    },
+    "ml-3": {
+      "title": "PR & Global Media Relations",
+      "division": "Marketing Lab",
+      "tiers": {
+        "starter": {
+          "name": "Press Blast",
+          "price": 62500,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Tier-1 Media Blitz",
+          "price": 175000,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Global PR Retainer",
+          "price": 450000,
+          "unit": "month",
+          "payable": true
+        }
+      }
+    },
+    "ml-4": {
+      "title": "Social Media Management",
+      "division": "Marketing Lab",
+      "tiers": {
+        "starter": {
+          "name": "Core Presence",
+          "price": 45000,
+          "unit": "month",
+          "payable": true
+        },
+        "pro": {
+          "name": "High-Volume Viral",
+          "price": 105000,
+          "unit": "month",
+          "payable": true
+        },
+        "enterprise": {
+          "name": "360 Channel Takeover",
+          "price": 250000,
+          "unit": "month",
+          "payable": true
+        }
+      }
+    },
+    "ml-5": {
+      "title": "Content Creation & Influencer Marketing",
+      "division": "Marketing Lab",
+      "tiers": {
+        "starter": {
+          "name": "Creator Pack",
+          "price": 75000,
+          "unit": null,
+          "payable": true
+        },
+        "pro": {
+          "name": "Influencer Campaign",
+          "price": 237500,
+          "unit": null,
+          "payable": true
+        },
+        "enterprise": {
+          "name": "Celebrity Ambassador",
+          "price": 750000,
+          "unit": null,
+          "payable": true
+        }
+      }
+    }
+  }
+}

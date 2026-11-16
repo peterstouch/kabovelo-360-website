@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="./assets/js/layout.js"></script>
@@ -20,7 +20,8 @@
     <div id="pageLoader" role="status" aria-label="Loading">
         <div class="loader-mark"><div class="loader-ring"></div><div class="loader-ring inner"></div><div class="loader-core">360</div></div>
         <div class="loader-word">KABOVELO</div>
-        <div class="loader-bar"></div>
+        <div class="loader-bar"><span></span></div>
+        <div class="loader-pct" aria-hidden="true">0%</div>
     </div>
 
     <div id="siteHeader"></div>
@@ -29,46 +30,51 @@
         <section class="relative pt-32 pb-12 overflow-hidden">
             <div class="absolute top-10 -right-20 w-96 h-96 bg-armyGreen/20 rounded-full animate-pulse-glow pointer-events-none"></div>
             <div class="absolute inset-0 bg-[radial-gradient(#2E352F_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Direct Communication</span>
-                <h1 class="font-serif text-4xl sm:text-6xl font-black tracking-tight text-white mt-3 mb-5 leading-tight">Initiate <span class="army-gradient-text">Contact</span></h1>
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
+                <span class="eyebrow">Direct Communication</span>
+                <h1 class="font-serif text-4xl sm:text-6xl font-semibold tracking-tight text-white mt-3 mb-5 leading-tight">Initiate <span class="army-gradient-text">Contact</span></h1>
                 <p class="max-w-2xl text-base sm:text-lg text-greyLight font-light leading-relaxed">Connect with specialized division leads or schedule an executive consultation for ecosystem-wide engagements.</p>
             </div>
         </section>
 
-        <section class="pb-20 sm:pb-24 bg-obsidian">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <section class="pb-16 sm:pb-20 lg:pb-28 bg-obsidian">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 <div class="lg:col-span-5 space-y-4 order-2 lg:order-1">
-                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-xl border-charcoalBorder">
-                        <div class="w-11 h-11 rounded-lg bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-location-dot"></i></div>
-                        <div>
-                            <h2 class="font-bold text-white text-sm">Global Headquarters</h2>
-                            <p class="text-greyMuted text-xs mt-1">Kabovelo 360 Studios &amp; Creative Campus, Innovation Boulevard</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-xl border-charcoalBorder">
-                        <div class="w-11 h-11 rounded-lg bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-2xl border-charcoalBorder">
+                        <div class="w-11 h-11 rounded-xl bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-envelope"></i></div>
                         <div class="min-w-0">
-                            <h2 class="font-bold text-white text-sm">Ecosystem Inquiries</h2>
-                            <p class="text-xs mt-1 flex flex-col gap-0.5">
-                                <a href="mailto:connect@kabovelo360.com" class="text-greyMuted hover:text-armyGreenLight break-all">connect@kabovelo360.com</a>
-                                <a href="mailto:bookings@kabovelo360.com" class="text-greyMuted hover:text-armyGreenLight break-all">bookings@kabovelo360.com</a>
-                            </p>
+                            <h2 class="font-semibold text-white text-sm">Email</h2>
+                            <a href="mailto:admin@kabovelo360.co.zm" class="text-greyMuted hover:text-armyGreenLight text-sm mt-1 block break-all">admin@kabovelo360.co.zm</a>
+                            <p class="text-[11px] text-greyMuted mt-1">Bookings, enrollments &amp; proof of payment (POP)</p>
                         </div>
                     </div>
-                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-xl border-charcoalBorder">
-                        <div class="w-11 h-11 rounded-lg bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-phone"></i></div>
+                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-2xl border-charcoalBorder">
+                        <div class="w-11 h-11 rounded-xl bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-phone"></i></div>
                         <div>
-                            <h2 class="font-bold text-white text-sm">Direct Desk</h2>
-                            <a href="tel:+18003605226" class="text-greyMuted hover:text-armyGreenLight text-xs mt-1 block">+1 (800) 360-KABO / +1 800 360 5226</a>
+                            <h2 class="font-semibold text-white text-sm">Phone &amp; WhatsApp</h2>
+                            <a href="tel:+260979813471" class="text-greyMuted hover:text-armyGreenLight text-sm mt-1 block">+260 979 813 471</a>
+                            <a href="https://wa.me/260979813471" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 mt-2 text-[11px] font-bold uppercase tracking-wider text-armyGreenLight hover:text-white"><i class="fa-brands fa-whatsapp text-sm"></i> Chat on WhatsApp</a>
                         </div>
                     </div>
-                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-xl border-charcoalBorder">
-                        <div class="w-11 h-11 rounded-lg bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-clock"></i></div>
+                    <div class="flex items-start gap-4 glass-card p-4 sm:p-5 rounded-2xl border-charcoalBorder">
+                        <div class="w-11 h-11 rounded-xl bg-armyGreen/30 flex items-center justify-center text-armyGreenLight flex-shrink-0 border border-armyGreenBright/30"><i class="fa-solid fa-location-dot"></i></div>
                         <div>
-                            <h2 class="font-bold text-white text-sm">Studio Hours</h2>
-                            <p class="text-greyMuted text-xs mt-1">Mon – Fri: 08:00 – 18:00 · Sat: 09:00 – 14:00</p>
+                            <h2 class="font-semibold text-white text-sm">Studio</h2>
+                            <p class="text-greyMuted text-sm mt-1">KABOVELO 360 Studios, Lusaka, Zambia</p>
+                            <p class="text-[11px] text-greyMuted mt-1">Mon – Fri 08:00 – 18:00 · Sat 09:00 – 14:00</p>
                         </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="./enroll.html" class="glass-card rounded-2xl p-4 border-charcoalBorder block">
+                            <i class="fa-solid fa-graduation-cap text-armyGreenLight"></i>
+                            <span class="block text-sm font-semibold text-white mt-2">Enroll online</span>
+                            <span class="block text-[11px] text-greyMuted mt-0.5">Film Academy courses</span>
+                        </a>
+                        <a href="./services.html" class="glass-card rounded-2xl p-4 border-charcoalBorder block">
+                            <i class="fa-solid fa-mobile-screen-button text-armyGreenLight"></i>
+                            <span class="block text-sm font-semibold text-white mt-2">Book &amp; pay</span>
+                            <span class="block text-[11px] text-greyMuted mt-0.5">With mobile money</span>
+                        </a>
                     </div>
 
                     <div class="relative rounded-2xl overflow-hidden border border-charcoalBorder h-56 hidden sm:block lg:block">
@@ -81,23 +87,28 @@
                 <div class="lg:col-span-7 order-1 lg:order-2">
                     <div id="contactContext" class="hidden items-start gap-3 mb-4 p-4 rounded-xl border border-armyGreenBright/40 bg-armyGreen/15 text-xs text-greyLight"></div>
 
-                    <form id="contactForm" class="glass-panel p-5 sm:p-8 rounded-3xl border border-charcoalBorder space-y-5">
-                        <h2 class="font-serif text-xl font-bold text-white">Book Consultation or Inquiry</h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label for="cName" class="block text-xs uppercase tracking-wider text-greyLight font-medium mb-2">Full Name *</label>
-                                <input id="cName" type="text" required autocomplete="name" class="w-full bg-obsidian border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-armyGreenLight" placeholder="Jane Doe">
-                            </div>
-                            <div>
-                                <label for="cEmail" class="block text-xs uppercase tracking-wider text-greyLight font-medium mb-2">Email Address *</label>
-                                <input id="cEmail" type="email" required autocomplete="email" class="w-full bg-obsidian border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-armyGreenLight" placeholder="jane@example.com">
-                            </div>
+                    <form id="contactForm" class="panel space-y-5" novalidate>
+                        <div>
+                            <h2 class="panel-title">Book a consultation or ask a question</h2>
+                            <p class="text-xs text-greyMuted mt-2">Ready to pay? <a href="./services.html" class="text-armyGreenLight underline">Book &amp; pay online</a> or <a href="./enroll.html" class="text-armyGreenLight underline">enroll in the Academy</a>.</p>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                             <div>
-                                <label for="contactDivision" class="block text-xs uppercase tracking-wider text-greyLight font-medium mb-2">Primary Division *</label>
-                                <select id="contactDivision" required class="w-full bg-obsidian border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-greyLight focus:outline-none focus:border-armyGreenLight">
-                                    <option value="General Ecosystem">General Ecosystem / Multi-Division</option>
+                                <label for="cName" class="field-label">Full name *</label>
+                                <input id="cName" name="name" type="text" required autocomplete="name" class="field" placeholder="e.g. Chanda Mwila">
+                            </div>
+                            <div>
+                                <label for="cEmail" class="field-label">Email address *</label>
+                                <input id="cEmail" name="email" type="email" required autocomplete="email" class="field" placeholder="you@example.com">
+                            </div>
+                            <div>
+                                <label for="cPhone" class="field-label">Phone</label>
+                                <input id="cPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" class="field" placeholder="097 123 4567">
+                            </div>
+                            <div>
+                                <label for="contactDivision" class="field-label">Division *</label>
+                                <select id="contactDivision" name="division" required class="field">
+                                    <option value="General Ecosystem">General / Multi-Division</option>
                                     <option value="Film Farm">Film Farm</option>
                                     <option value="Film Academy">Film Academy</option>
                                     <option value="Fashion Avenue">Fashion Avenue</option>
@@ -105,28 +116,30 @@
                                     <option value="Marketing Lab">Marketing Lab</option>
                                 </select>
                             </div>
-                            <div>
-                                <label for="cBudget" class="block text-xs uppercase tracking-wider text-greyLight font-medium mb-2">Estimated Budget</label>
-                                <select id="cBudget" class="w-full bg-obsidian border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-greyLight focus:outline-none focus:border-armyGreenLight">
-                                    <option>Below $5,000</option>
-                                    <option>$5,000 - $15,000</option>
-                                    <option>$15,000 - $50,000</option>
-                                    <option>$50,000+ Enterprise</option>
+                            <div class="sm:col-span-2">
+                                <label for="cBudget" class="field-label">Estimated budget</label>
+                                <select id="cBudget" name="budget" class="field">
+                                    <option>Below K25,000</option>
+                                    <option>K25,000 – K100,000</option>
+                                    <option>K100,000 – K500,000</option>
+                                    <option>K500,000+</option>
                                 </select>
                             </div>
                         </div>
                         <div>
-                            <label for="contactMessage" class="block text-xs uppercase tracking-wider text-greyLight font-medium mb-2">Project Brief / Details *</label>
-                            <textarea id="contactMessage" required rows="5" class="w-full bg-obsidian border border-charcoalBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-armyGreenLight" placeholder="Tell us about your project requirements, timelines, and strategic goals..."></textarea>
+                            <label for="contactMessage" class="field-label">Project brief / details *</label>
+                            <textarea id="contactMessage" name="message" required rows="5" class="field" placeholder="Tell us about your project requirements, timelines and goals…"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:shadow-armyGreenBright/30 transition-all hover:scale-[1.01] border border-armyGreenLight/30">
-                            <i class="fa-solid fa-paper-plane mr-1"></i> Dispatch Booking Request
+                        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+                        <div data-form-error class="hidden p-3 rounded-xl border border-rose-400/40 bg-rose-500/10 text-rose-200 text-xs"></div>
+                        <button type="submit" class="btn-primary w-full py-4 rounded-xl text-xs font-bold uppercase tracking-widest">
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i> Send Request
                         </button>
                     </form>
 
                     <div id="contactSuccess" class="hidden glass-panel p-8 sm:p-12 rounded-3xl border border-armyGreenBright/40 text-center">
                         <div class="w-16 h-16 mx-auto rounded-full bg-armyGreen/40 border border-armyGreenBright/50 flex items-center justify-center text-armyGreenLight text-2xl mb-5"><i class="fa-solid fa-check"></i></div>
-                        <h2 class="font-serif text-2xl font-bold text-white mb-3">Request received</h2>
+                        <h2 class="font-serif text-2xl font-semibold text-white mb-3">Request received</h2>
                         <p class="text-sm text-greyMuted max-w-md mx-auto mb-6">Thank you — the relevant division lead will be in touch within one business day.</p>
                         <div class="flex flex-col sm:flex-row justify-center gap-3">
                             <button type="button" id="contactAgain" class="px-6 py-3 rounded-xl glass-card text-white text-xs font-bold uppercase tracking-wider">Send another message</button>
@@ -138,11 +151,11 @@
         </section>
 
         <!-- FAQ -->
-        <section class="py-20 sm:py-24 bg-tacticalBlack border-y border-charcoalBorder">
-            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-16 sm:py-20 lg:py-28 bg-tacticalBlack border-y border-charcoalBorder">
+            <div class="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="text-center mb-10 reveal">
-                    <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Good to Know</span>
-                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mt-2">Frequently Asked Questions</h2>
+                    <span class="eyebrow">Good to Know</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-white mt-2">Frequently Asked Questions</h2>
                 </div>
                 <div class="space-y-3">
                     <div class="faq-item glass-card rounded-2xl border-charcoalBorder overflow-hidden">

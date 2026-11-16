@@ -1,0 +1,16 @@
+{
+  "name": "kabovelo-api",
+  "private": true,
+  "description": "KABOVELO 360 payments & enrollment API (Cloudflare Worker + D1 + Lipila + Resend)",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute kabovelo-orders --local --file=schema.sql",
+    "db:init:remote": "wrangler d1 execute kabovelo-orders --remote --file=schema.sql",
+    "orders": "wrangler d1 execute kabovelo-orders --remote --command \"SELECT ref, status, customer_name, total, created_at FROM orders ORDER BY created_at DESC LIMIT 30\"",
+    "logs": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.0"
+  }
+}

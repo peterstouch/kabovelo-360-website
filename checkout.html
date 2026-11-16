@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book KABOVELO 360 services and pay securely online with MTN MoMo, Airtel Money or Zamtel Kwacha.">
+    <title>Book &amp; Pay Online | KABOVELO 360</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="./assets/js/layout.js"></script>
+    <script src="./assets/js/data.js" defer></script>
+    <script src="./assets/js/main.js" defer></script>
+    <script src="./assets/js/checkout.js" defer></script>
+</head>
+<body data-page="checkout" class="bg-obsidian text-greyLight font-sans selection:bg-armyGreenBright selection:text-obsidian antialiased overflow-x-hidden">
+
+    <div id="pageLoader" role="status" aria-label="Loading">
+        <div class="loader-mark"><div class="loader-ring"></div><div class="loader-ring inner"></div><div class="loader-core">360</div></div>
+        <div class="loader-word">KABOVELO</div>
+        <div class="loader-bar"><span></span></div>
+        <div class="loader-pct" aria-hidden="true">0%</div>
+    </div>
+
+    <div id="siteHeader"></div>
+
+    <main>
+        <section class="relative pt-32 pb-10 sm:pb-12 overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(#2E352F_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none"></div>
+            <div class="container-x relative">
+                <span class="eyebrow">Book &amp; Pay Online</span>
+                <h1 class="font-serif text-4xl sm:text-5xl font-semibold tracking-tight text-white mt-3 leading-tight">Secure <span class="army-gradient-text">Checkout</span></h1>
+                <p class="max-w-2xl text-sm sm:text-base text-greyMuted mt-4 leading-relaxed">Review your package, add your details and pay with mobile money. You’ll get a PIN prompt on your phone and an emailed receipt the moment payment is confirmed.</p>
+                <ol class="steps mt-8" aria-label="Checkout steps">
+                    <li class="is-active"><span>1</span> Details</li>
+                    <li><span>2</span> Approve on phone</li>
+                    <li><span>3</span> Confirmed</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="pb-20 sm:pb-24 lg:pb-28">
+            <form id="checkoutForm" class="container-x grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start" novalidate>
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="panel">
+                        <div class="flex items-center justify-between gap-4 mb-5">
+                            <h2 class="panel-title">Your booking</h2>
+                            <a href="./services.html" class="text-[11px] font-bold uppercase tracking-widest text-armyGreenLight hover:text-white"><i class="fa-solid fa-plus mr-1"></i> Add service</a>
+                        </div>
+                        <div id="cartList" class="space-y-3"></div>
+                    </div>
+
+                    <div class="panel">
+                        <h2 class="panel-title mb-5">Your details</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                            <div>
+                                <label for="fullName" class="field-label">Full name *</label>
+                                <input id="fullName" name="fullName" type="text" required autocomplete="name" class="field" placeholder="e.g. Chanda Mwila">
+                            </div>
+                            <div>
+                                <label for="email" class="field-label">Email address *</label>
+                                <input id="email" name="email" type="email" required autocomplete="email" class="field" placeholder="you@example.com">
+                                <p class="field-hint">Your receipt is sent here.</p>
+                            </div>
+                            <div>
+                                <label for="phone" class="field-label">Mobile money number *</label>
+                                <input id="phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel" class="field" placeholder="097 123 4567">
+                                <p id="netBadge" class="net-badge">MTN · Airtel · Zamtel</p>
+                            </div>
+                            <div>
+                                <label for="preferredDate" class="field-label">Preferred start date</label>
+                                <input id="preferredDate" name="preferredDate" type="date" class="field">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="notes" class="field-label">Project notes</label>
+                                <textarea id="notes" name="notes" rows="3" class="field" placeholder="Tell us about the project, locations, timelines…"></textarea>
+                            </div>
+                        </div>
+                        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+                        <label class="flex items-start gap-3 mt-5 text-xs text-greyMuted cursor-pointer">
+                            <input type="checkbox" name="terms" class="mt-0.5 w-4 h-4 accent-[#6E915B] flex-shrink-0">
+                            <span>I agree to the <a href="./legal.html#terms" target="_blank" class="text-armyGreenLight underline">Terms of Ecosystem</a> and understand that final scheduling is confirmed by the KABOVELO 360 team.</span>
+                        </label>
+                        <div data-form-error class="hidden mt-5 p-3 rounded-xl border border-rose-400/40 bg-rose-500/10 text-rose-200 text-xs"></div>
+                    </div>
+                </div>
+
+                <aside class="lg:col-span-5 lg:sticky lg:top-28">
+                    <div class="panel border-armyGreenBright/30">
+                        <div class="flex items-center justify-between mb-5">
+                            <h2 class="panel-title">Order summary</h2>
+                            <span id="sumCount" class="text-[11px] text-greyMuted">0 items</span>
+                        </div>
+                        <dl class="space-y-3 text-sm">
+                            <div class="flex justify-between"><dt class="text-greyMuted">Subtotal</dt><dd id="sumSubtotal" class="text-white">K0</dd></div>
+                            <div id="sumDiscountRow" class="hidden flex justify-between text-armyGreenLight"><dt id="sumDiscountLabel">Synergy discount</dt><dd id="sumDiscount">−K0</dd></div>
+                            <div class="flex justify-between items-baseline pt-4 border-t border-white/10"><dt class="text-white font-semibold">Total</dt><dd id="sumTotal" class="font-serif text-2xl text-white font-semibold">K0</dd></div>
+                        </dl>
+                        <p id="sumWarning" class="hidden mt-4 text-xs text-amber-200/90 leading-relaxed"></p>
+
+                        <button id="payButton" type="submit" class="btn-primary w-full mt-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest disabled:opacity-40 disabled:pointer-events-none">
+                            <i class="fa-solid fa-lock mr-1.5"></i> Pay <span data-amount>K0</span> with Mobile Money
+                        </button>
+
+                        <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+                            <span class="momo-chip" style="--c:#FFCB05">MTN MoMo</span>
+                            <span class="momo-chip" style="--c:#E40000">Airtel Money</span>
+                            <span class="momo-chip" style="--c:#00A651">Zamtel Kwacha</span>
+                        </div>
+                        <ul class="mt-6 space-y-2.5 text-[11px] text-greyMuted">
+                            <li class="flex gap-2"><i class="fa-solid fa-shield-halved text-armyGreenLight mt-0.5"></i>Payments processed securely by Lipila.</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-mobile-screen text-armyGreenLight mt-0.5"></i>Approve with your PIN on your own phone — we never see it.</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-envelope-open-text text-armyGreenLight mt-0.5"></i>Receipt and POP instructions emailed instantly.</li>
+                        </ul>
+                    </div>
+                    <p class="text-[11px] text-greyMuted text-center mt-4">Need help? <a href="tel:+260979813471" class="text-armyGreenLight">+260 979 813 471</a> · <a href="mailto:admin@kabovelo360.co.zm" class="text-armyGreenLight">admin@kabovelo360.co.zm</a></p>
+                </aside>
+            </form>
+        </section>
+    </main>
+
+    <div id="siteFooter"></div>
+</body>
+</html>

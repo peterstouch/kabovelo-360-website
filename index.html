@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="./assets/js/layout.js"></script>
@@ -20,7 +20,8 @@
     <div id="pageLoader" role="status" aria-label="Loading">
         <div class="loader-mark"><div class="loader-ring"></div><div class="loader-ring inner"></div><div class="loader-core">360</div></div>
         <div class="loader-word">KABOVELO</div>
-        <div class="loader-bar"></div>
+        <div class="loader-bar"><span></span></div>
+        <div class="loader-pct" aria-hidden="true">0%</div>
     </div>
 
     <div id="siteHeader"></div>
@@ -32,13 +33,13 @@
             <div class="absolute bottom-1/4 -right-20 sm:right-10 w-80 h-80 sm:w-[30rem] sm:h-[30rem] bg-armyGreenBright/15 rounded-full animate-pulse-glow pointer-events-none" style="animation-delay: 2s;"></div>
             <div class="absolute inset-0 bg-[radial-gradient(#2E352F_1px,transparent_1px)] [background-size:32px_32px] opacity-25 pointer-events-none"></div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center w-full">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10 text-center w-full">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-armyGreenBright/40 mb-8 animate-float max-w-full">
                     <span class="w-2 h-2 rounded-full bg-armyGreenBright animate-ping flex-shrink-0"></span>
                     <span class="text-[10px] sm:text-xs uppercase tracking-widest text-armyGreenLight font-semibold">360° Tactical Creative &amp; Impact Powerhouse</span>
                 </div>
 
-                <h1 class="font-serif text-[2rem] leading-tight min-[400px]:text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-6 sm:leading-none">
+                <h1 class="font-serif text-[2rem] leading-tight min-[400px]:text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-white mb-6 sm:leading-none">
                     CINEMA. STYLE. <br/>
                     <span class="army-gradient-text">EDUCATION. IMPACT.</span>
                 </h1>
@@ -67,11 +68,11 @@
         </section>
 
         <!-- DIVISIONS (interactive tabs) -->
-        <section class="py-20 sm:py-24 relative bg-tacticalBlack border-y border-charcoalBorder">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-16 sm:py-20 lg:py-28 relative bg-tacticalBlack border-y border-charcoalBorder">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-12 reveal">
-                    <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Integrated Pillars</span>
-                    <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-2 mb-4">Five Pillars of Creative Synergy</h2>
+                    <span class="eyebrow">Integrated Pillars</span>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-white mt-2 mb-4">Five Pillars of Creative Synergy</h2>
                     <p class="text-greyMuted text-sm sm:text-base">Explore specialized division capabilities, high-tier service packaging, and unified execution.</p>
                 </div>
                 <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10" id="divisionTabs"></div>
@@ -80,9 +81,9 @@
         </section>
 
         <!-- FOUNDER SPOTLIGHT -->
-        <section class="py-20 sm:py-24 relative bg-obsidian overflow-hidden">
+        <section class="py-16 sm:py-20 lg:py-28 relative bg-obsidian overflow-hidden">
             <div class="absolute -right-32 top-20 w-96 h-96 bg-armyGreen/20 rounded-full animate-pulse-glow pointer-events-none"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center relative">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center relative">
                 <div class="lg:col-span-5 reveal">
                     <div class="relative max-w-md mx-auto">
                         <div class="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-armyGreenBright/40 via-transparent to-armyGreen/30 blur-xl"></div>
@@ -94,8 +95,8 @@
                     </div>
                 </div>
                 <div class="lg:col-span-7 reveal pt-6 lg:pt-0">
-                    <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Meet the Founder</span>
-                    <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-2 mb-5" data-founder-name>Founder &amp; Creative Director</h2>
+                    <span class="eyebrow">Meet the Founder</span>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-white mt-2 mb-5" data-founder-name>Founder &amp; Creative Director</h2>
                     <blockquote class="border-l-2 border-armyGreenBright pl-5 text-lg sm:text-xl text-greyLight font-light italic leading-relaxed mb-6" data-founder-quote></blockquote>
                     <div class="space-y-4 text-sm sm:text-base text-greyMuted leading-relaxed mb-8" data-founder-bio></div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8" data-sessions-gallery="4"></div>
@@ -108,12 +109,12 @@
         </section>
 
         <!-- FEATURED WORK -->
-        <section class="py-20 sm:py-24 relative bg-tacticalBlack border-y border-charcoalBorder">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-16 sm:py-20 lg:py-28 relative bg-tacticalBlack border-y border-charcoalBorder">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Visual Portfolio</span>
-                        <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-2">Featured Work</h2>
+                        <span class="eyebrow">Visual Portfolio</span>
+                        <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-white mt-2">Featured Work</h2>
                         <p class="text-greyMuted text-sm sm:text-base mt-3 max-w-2xl">Films, classrooms, runways, community programs and campaigns from across the ecosystem.</p>
                     </div>
                     <a href="./work.html" class="self-start md:self-auto inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card border border-white/20 text-white text-xs font-bold uppercase tracking-widest hover:bg-white/10 whitespace-nowrap">View All Work <i class="fa-solid fa-arrow-right"></i></a>
@@ -124,19 +125,19 @@
         </section>
 
         <!-- CLIENTS -->
-        <section class="py-16 sm:py-20 bg-obsidian">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-16 sm:py-20 lg:py-24 bg-obsidian">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="text-center mb-10 reveal">
-                    <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Trusted By</span>
-                    <h2 class="font-serif text-2xl sm:text-4xl font-bold text-white mt-2">Clients &amp; Partners</h2>
+                    <span class="eyebrow">Trusted By</span>
+                    <h2 class="font-serif text-2xl sm:text-4xl font-semibold text-white mt-2">Clients &amp; Partners</h2>
                 </div>
                 <div id="clientMarquee"></div>
             </div>
         </section>
 
         <!-- IMPACT COUNTERS -->
-        <section class="py-20 relative bg-tacticalBlack border-y border-charcoalBorder">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-16 sm:py-20 lg:py-24 relative bg-tacticalBlack border-y border-charcoalBorder">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
                     <div class="glass-card p-5 sm:p-6 rounded-2xl border-charcoalBorder reveal">
                         <div class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-2 counter" data-target="140">0</div>
@@ -151,7 +152,7 @@
                         <p class="text-[10px] sm:text-xs uppercase tracking-widest text-armyGreenLight font-semibold">Runway Collections</p>
                     </div>
                     <div class="glass-card p-5 sm:p-6 rounded-2xl border-charcoalBorder reveal">
-                        <div class="text-3xl lg:text-5xl font-serif font-bold text-armyGreenLight mb-2">$<span class="counter" data-target="150">0</span>k+</div>
+                        <div class="text-3xl lg:text-5xl font-serif font-bold text-armyGreenLight mb-2">K<span class="counter" data-target="3.8" data-decimals="1">0</span>M+</div>
                         <p class="text-[10px] sm:text-xs uppercase tracking-widest text-armyGreenLight font-semibold">Youth Grants Distributed</p>
                     </div>
                 </div>
@@ -162,14 +163,14 @@
         </section>
 
         <!-- CTA -->
-        <section class="py-20 bg-gradient-to-r from-armyGreenDark via-tacticalBlack to-obsidian">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Interactive Client Studio</span>
-                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-3 mb-5">Build your ecosystem package.</h2>
-                <p class="max-w-2xl mx-auto text-sm sm:text-base text-greyMuted leading-relaxed mb-8">Combine services from two or more divisions to unlock up to 25% synergy savings — or talk to our team directly.</p>
+        <section class="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-armyGreenDark via-tacticalBlack to-obsidian">
+            <div class="max-w-5xl mx-auto px-5 sm:px-6 lg:px-8 text-center reveal">
+                <span class="eyebrow">Interactive Client Studio</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-white mt-3 mb-5">Enroll, book &amp; pay online.</h2>
+                <p class="max-w-2xl mx-auto text-sm sm:text-base text-greyMuted leading-relaxed mb-8">Secure your Film Academy place or book any service in minutes with MTN MoMo, Airtel Money or Zamtel Kwacha. Combine divisions to save up to 25%.</p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="./synergy.html" class="px-8 py-4 rounded-full bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-all border border-armyGreenLight/30">Open Synergy Builder</a>
-                    <a href="./contact.html" class="px-8 py-4 rounded-full glass-card hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-widest border border-white/20">Contact Us</a>
+                    <a href="./enroll.html" class="btn-primary px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest"><i class="fa-solid fa-graduation-cap mr-2"></i> Enroll in the Academy</a>
+                    <a href="./synergy.html" class="px-8 py-4 rounded-full glass-card hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-widest border border-white/20">Open Synergy Builder</a>
                 </div>
             </div>
         </section>

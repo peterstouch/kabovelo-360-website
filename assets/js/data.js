@@ -1,5 +1,48 @@
 // KABOVELO 360 — SITE DATA
-// Edit this file to update divisions, services, demo work, clients and the founder profile.
+// Edit this file to update divisions, services, prices, intakes, demo work, clients and the founder profile.
+// After changing prices or services run `npm run catalog` so the payment server uses the same prices.
+
+// SITE SETTINGS
+const SITE = {
+    email: 'admin@kabovelo360.co.zm',
+    phone: '+260979813471',
+    phoneDisplay: '+260 979 813 471',
+    whatsapp: 'https://wa.me/260979813471',
+    location: 'Lusaka, Zambia',
+    currency: 'ZMW',
+    // Payment API (Cloudflare Worker). Local testing uses the dev server automatically.
+    apiBase: ['localhost', '127.0.0.1'].includes(location.hostname)
+        ? 'http://localhost:8787'
+        : 'https://kabovelo-api.YOUR-SUBDOMAIN.workers.dev',
+    // Largest amount accepted in one mobile money payment (confirm with Lipila).
+    // Must match ONLINE_LIMIT in api/wrangler.toml.
+    onlineLimit: 150000
+};
+
+// FILM ACADEMY INTAKES — shown on the enrollment page
+const ACADEMY_INTAKES = [
+    { id: '2027-01', label: 'January 2027 Intake', starts: '11 Jan 2027' },
+    { id: '2027-03', label: 'March 2027 Intake', starts: '08 Mar 2027' },
+    { id: '2027-05', label: 'May 2027 Intake', starts: '10 May 2027' }
+];
+
+const UNIT_LABELS = { day: 'day', week: 'week', month: 'month', year: 'year' };
+
+// "K12,500", "from K300,000", "K18,750 / day", "Free / Grant"
+function formatKwacha(amount) {
+    return 'K' + Math.round(amount).toLocaleString('en-US');
+}
+function formatPrice(pkg, { short = false } = {}) {
+    if (!pkg.payable && pkg.payable !== undefined) return pkg.priceLabel;
+    let s = formatKwacha(pkg.price);
+    if (pkg.unit) s += short ? `/${pkg.unit === 'month' ? 'mo' : pkg.unit === 'year' ? 'yr' : pkg.unit}` : ` / ${UNIT_LABELS[pkg.unit]}`;
+    if (pkg.note && !short) s += ` ${pkg.note.toLowerCase()}`;
+    return pkg.from ? `from ${s}` : s;
+}
+// payable online = has a price and is within the mobile money limit
+function isPayableOnline(pkg) {
+    return pkg.payable !== false && pkg.price > 0 && pkg.price <= SITE.onlineLimit;
+}
 
 // ECOSYSTEM DATA STRUCTURE WITH RICH IMAGERY FOR ALL 5 DIVISIONS
 const ECOSYSTEM_DIVISIONS = {
@@ -23,23 +66,23 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Transforming raw ideas into production-ready screenplays. Includes story structure analysis, table reads, concept art creation, location mapping, and pitch deck creation for investors.',
                         turnaround: '2 - 6 Weeks depending on script length',
                         packages: {
-                            starter: { name: 'Indie Concept', price: '$2,500', items: ['Script Coverage', 'Beat Sheet', '10 Storyboard Frames'] },
-                            pro: { name: 'Feature Ready', price: '$6,500', items: ['Full Screenplay Polish', 'Complete Storyboard', 'Investor Pitch Deck'] },
-                            enterprise: { name: '360 Franchise', price: '$12,000+', items: ['Series Bible', 'Legal Clearance', 'Full Directorial Breakdown'] }
+                            starter: { name: 'Indie Concept', price: 62500, items: ['Script Coverage', 'Beat Sheet', '10 Storyboard Frames'] },
+                            pro: { name: 'Feature Ready', price: 162500, items: ['Full Screenplay Polish', 'Complete Storyboard', 'Investor Pitch Deck'] },
+                            enterprise: { name: '360 Franchise', price: 300000, from: true, items: ['Series Bible', 'Legal Clearance', 'Full Directorial Breakdown'] }
                         }
                     },
                     {
                         id: 'ff-2',
                         title: 'Full Feature Film & Series Production',
                         division: 'Film Farm',
-                        image: './assets/images/stock/film-production.jpg',
+                        image: './assets/images/team/directing-actors-bw.jpg',
                         shortDesc: 'Turnkey principal photography execution with world-class directors and crew.',
                         fullDesc: 'End-to-end production management including directors, DPs, sound engineers, production designers, gaffers, and safety marshals equipped for large scale commercial or narrative film sets.',
                         turnaround: 'Custom Production Schedule',
                         packages: {
-                            starter: { name: 'Short Film Unit', price: '$15,000', items: ['3 Days Principal Shoot', '4K Cinema Crew', 'Basic Lighting Kit'] },
-                            pro: { name: 'Commercial Series', price: '$45,000', items: ['10 Days Production', 'RED/ARRI Multi-Cam', 'Full Grip & Lighting Truck'] },
-                            enterprise: { name: 'Theatrical Feature', price: '$120,000+', items: ['Full Feature Unit', 'Celebrity Talent Booking', 'International Location Crew'] }
+                            starter: { name: 'Short Film Unit', price: 375000, items: ['3 Days Principal Shoot', '4K Cinema Crew', 'Basic Lighting Kit'] },
+                            pro: { name: 'Commercial Series', price: 1125000, items: ['10 Days Production', 'RED/ARRI Multi-Cam', 'Full Grip & Lighting Truck'] },
+                            enterprise: { name: 'Theatrical Feature', price: 3000000, from: true, items: ['Full Feature Unit', 'Celebrity Talent Booking', 'International Location Crew'] }
                         }
                     },
                     {
@@ -51,9 +94,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Tier-1 production rentals featuring ARRI ALEXA 35, RED V-Raptor, Cooke Anamorphic optics, Wireless Video Systems, Heavy-duty Drones, and Sound Stage soundproof studios.',
                         turnaround: 'Daily or Weekly Lock-outs',
                         packages: {
-                            starter: { name: 'Solo Filmmaker Kit', price: '$750/day', items: ['Cinema Rig + Prime Lenses', 'Wireless Mic Set', 'LED Panel Pair'] },
-                            pro: { name: 'Studio Production Suite', price: '$2,500/day', items: ['Dual RED Cameras', 'Aperture Lighting Grid', 'Sound Stage Access'] },
-                            enterprise: { name: 'Master Fleet', price: '$7,000/week', items: ['Custom Camera & Grip Truck', 'DIT Cart', 'Full Crew Technicians'] }
+                            starter: { name: 'Solo Filmmaker Kit', price: 19000, unit: 'day', items: ['Cinema Rig + Prime Lenses', 'Wireless Mic Set', 'LED Panel Pair'] },
+                            pro: { name: 'Studio Production Suite', price: 62500, unit: 'day', items: ['Dual RED Cameras', 'Aperture Lighting Grid', 'Sound Stage Access'] },
+                            enterprise: { name: 'Master Fleet', price: 175000, unit: 'week', items: ['Custom Camera & Grip Truck', 'DIT Cart', 'Full Crew Technicians'] }
                         }
                     },
                     {
@@ -65,9 +108,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Precision post-production suite driven by DaVinci Resolve Studio colorists, VFX artists, and NLE editors providing theatrical DCI-P3 mastering and Dolby Vision exports.',
                         turnaround: '1 - 4 Weeks',
                         packages: {
-                            starter: { name: 'Color & Edit Polish', price: '$3,000', items: ['4K Picture Cut', 'DaVinci Color Grade', 'Stereo Mix'] },
-                            pro: { name: 'VFX Heavy Package', price: '$9,500', items: ['Cleanups & CGI Compositing', 'Dolby Atmos Audio', 'DCP Cinema Export'] },
-                            enterprise: { name: 'Master Feature Suite', price: '$25,000+', items: ['3D CGI Integration', 'Frame-by-frame Paint', 'Global Localization Deliverables'] }
+                            starter: { name: 'Color & Edit Polish', price: 75000, items: ['4K Picture Cut', 'DaVinci Color Grade', 'Stereo Mix'] },
+                            pro: { name: 'VFX Heavy Package', price: 237500, items: ['Cleanups & CGI Compositing', 'Dolby Atmos Audio', 'DCP Cinema Export'] },
+                            enterprise: { name: 'Master Feature Suite', price: 625000, from: true, items: ['3D CGI Integration', 'Frame-by-frame Paint', 'Global Localization Deliverables'] }
                         }
                     },
                     {
@@ -79,9 +122,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Immersive audio engineering that breathes emotion into visual media. Custom compositions, Foley sound effects creation, dialogue cleaning, and surround sound mastering.',
                         turnaround: '1 - 3 Weeks',
                         packages: {
-                            starter: { name: 'Indie Score', price: '$1,800', items: ['Original Main Theme', 'Foley Sound Effects', '2.0 Stereo Master'] },
-                            pro: { name: 'Broadcast Surround', price: '$4,800', items: ['Full Film Scoring', '5.1 Surround Mix', 'ADR Session Recording'] },
-                            enterprise: { name: 'Orchestral Atmos', price: '$15,000+', items: ['Live Instrument Ensembles', 'Dolby Atmos Mixing', 'Global OST Release'] }
+                            starter: { name: 'Indie Score', price: 45000, items: ['Original Main Theme', 'Foley Sound Effects', '2.0 Stereo Master'] },
+                            pro: { name: 'Broadcast Surround', price: 120000, items: ['Full Film Scoring', '5.1 Surround Mix', 'ADR Session Recording'] },
+                            enterprise: { name: 'Orchestral Atmos', price: 375000, from: true, items: ['Live Instrument Ensembles', 'Dolby Atmos Mixing', 'Global OST Release'] }
                         }
                     },
                     {
@@ -93,9 +136,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Unlocking breathtaking architectural, urban, and natural locations. Full handling of film permits, community relations, security protocols, and location management.',
                         turnaround: '3 - 7 Days',
                         packages: {
-                            starter: { name: 'City Permit Pack', price: '$1,200', items: ['3 Location Lookbooks', 'Standard City Permits'] },
-                            pro: { name: 'Full Scouting Unit', price: '$3,500', items: ['10+ Verified Locations', 'Commercial Permits', 'On-Site Location Manager'] },
-                            enterprise: { name: 'Expedition Logistics', price: '$8,000+', items: ['Remote / Closed Access Permits', 'Full Safety Unit', 'Basecamp Setup'] }
+                            starter: { name: 'City Permit Pack', price: 30000, items: ['3 Location Lookbooks', 'Standard City Permits'] },
+                            pro: { name: 'Full Scouting Unit', price: 87500, items: ['10+ Verified Locations', 'Commercial Permits', 'On-Site Location Manager'] },
+                            enterprise: { name: 'Expedition Logistics', price: 200000, from: true, items: ['Remote / Closed Access Permits', 'Full Safety Unit', 'Basecamp Setup'] }
                         }
                     }
                 ]
@@ -120,9 +163,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Learn screenwriting blueprints and directorial vision from award-winning filmmakers. Includes script workshops, visual shot-listing, and direct scene rehearsals.',
                         turnaround: '6-Week Cohort or Intensive Weekend',
                         packages: {
-                            starter: { name: 'Weekend Bootcamp', price: '$499', items: ['12 Hours Live Workshops', 'Script Feedback', 'Certificate'] },
-                            pro: { name: 'Director Cohort', price: '$1,899', items: ['6-Week Mentorship', 'Direct 1 Short Scene on Set', 'Industry Showcase'] },
-                            enterprise: { name: 'Executive Masterclass', price: '$4,500', items: ['1-on-1 Directing Coach', 'Feature Script Development', 'Festival Pitch Slot'] }
+                            starter: { name: 'Weekend Bootcamp', price: 12500, items: ['12 Hours Live Workshops', 'Script Feedback', 'Certificate'] },
+                            pro: { name: 'Director Cohort', price: 47500, items: ['6-Week Mentorship', 'Direct 1 Short Scene on Set', 'Industry Showcase'] },
+                            enterprise: { name: 'Executive Masterclass', price: 112500, items: ['1-on-1 Directing Coach', 'Feature Script Development', 'Festival Pitch Slot'] }
                         }
                     },
                     {
@@ -134,9 +177,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Master optics, lens choices, exposure science, and dramatic lighting techniques. Practical studio exercises on real film sets with professional gaffers.',
                         turnaround: '4-Week Hands-On Program',
                         packages: {
-                            starter: { name: 'Camera Fundamentals', price: '$650', items: ['Camera Operating Basics', 'Standard 3-Point Lighting', 'Lab Access'] },
-                            pro: { name: 'Advanced Cinematographer', price: '$2,200', items: ['Anamorphic & Prime Lenses', 'Complex Dolly/Gimbal Shots', 'Reel Scene Shoot'] },
-                            enterprise: { name: 'DP Fellowship', price: '$5,000', items: ['Master DP Mentorship', 'Dedicated Crew for Shoot', 'Color Grading Integration'] }
+                            starter: { name: 'Camera Fundamentals', price: 16000, items: ['Camera Operating Basics', 'Standard 3-Point Lighting', 'Lab Access'] },
+                            pro: { name: 'Advanced Cinematographer', price: 55000, items: ['Anamorphic & Prime Lenses', 'Complex Dolly/Gimbal Shots', 'Reel Scene Shoot'] },
+                            enterprise: { name: 'DP Fellowship', price: 125000, items: ['Master DP Mentorship', 'Dedicated Crew for Shoot', 'Color Grading Integration'] }
                         }
                     },
                     {
@@ -148,9 +191,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Shift from stage to screen. Master micro-expressions, emotional recall, cold reading, hitting marks, and working seamlessly with directors.',
                         turnaround: '8-Week Acting Studio',
                         packages: {
-                            starter: { name: 'Screen Essentials', price: '$550', items: ['Audition Technique', 'Self-Tape Training', 'Group Scene Study'] },
-                            pro: { name: 'Professional Actor', price: '$1,750', items: ['Monologue & Scene Work', '4K Cinematic Demo Reel', 'Casting Director Review'] },
-                            enterprise: { name: 'Lead Artist Prep', price: '$3,800', items: ['Private Character Coaching', 'Feature Role Prep', 'Agent Showcase Session'] }
+                            starter: { name: 'Screen Essentials', price: 14000, items: ['Audition Technique', 'Self-Tape Training', 'Group Scene Study'] },
+                            pro: { name: 'Professional Actor', price: 44000, items: ['Monologue & Scene Work', '4K Cinematic Demo Reel', 'Casting Director Review'] },
+                            enterprise: { name: 'Lead Artist Prep', price: 95000, items: ['Private Character Coaching', 'Feature Role Prep', 'Agent Showcase Session'] }
                         }
                     },
                     {
@@ -162,9 +205,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Comprehensive post-production curriculum covering narrative editing, color science, motion graphics, and virtual production workflows.',
                         turnaround: '8-Week Certification',
                         packages: {
-                            starter: { name: 'NLE Fundamentals', price: '$700', items: ['Editing Mechanics', 'Basic Sound Clean', 'Software Certificate'] },
-                            pro: { name: 'Pro Post Specialist', price: '$2,400', items: ['Advanced Color Grading', '2D/3D VFX Compositing', 'Industry Portfolio'] },
-                            enterprise: { name: 'Virtual Prod Master', price: '$5,500', items: ['Unreal Engine 5 for Film', 'LED Wall Operating', '1-on-1 Studio Internship'] }
+                            starter: { name: 'NLE Fundamentals', price: 17500, items: ['Editing Mechanics', 'Basic Sound Clean', 'Software Certificate'] },
+                            pro: { name: 'Pro Post Specialist', price: 60000, items: ['Advanced Color Grading', '2D/3D VFX Compositing', 'Industry Portfolio'] },
+                            enterprise: { name: 'Virtual Prod Master', price: 137500, items: ['Unreal Engine 5 for Film', 'LED Wall Operating', '1-on-1 Studio Internship'] }
                         }
                     },
                     {
@@ -176,9 +219,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'In partnership with Hope Foundation, providing youth with hands-on digital media literacy, mobile cinematography, editing, and creative storytelling tools.',
                         turnaround: '12-Week Incubator',
                         packages: {
-                            starter: { name: 'Sponsored Youth', price: 'Free / Grant', items: ['Mobile Filmmaking Gear', 'Weekly Mentorship', 'Community Film Fest'] },
-                            pro: { name: 'School Academy Hub', price: '$3,000', items: ['On-Site High School Training', 'Equipment Access', 'Student Showcase'] },
-                            enterprise: { name: 'Corporate Social Partner', price: '$10,000', items: ['Sponsor 20 Youth Scholars', 'Co-Branded Film Premiere', 'Impact Doc'] }
+                            starter: { name: 'Sponsored Youth', price: 0, payable: false, priceLabel: 'Free / Grant', items: ['Mobile Filmmaking Gear', 'Weekly Mentorship', 'Community Film Fest'] },
+                            pro: { name: 'School Academy Hub', price: 75000, items: ['On-Site High School Training', 'Equipment Access', 'Student Showcase'] },
+                            enterprise: { name: 'Corporate Social Partner', price: 250000, items: ['Sponsor 20 Youth Scholars', 'Co-Branded Film Premiere', 'Impact Doc'] }
                         }
                     }
                 ]
@@ -203,9 +246,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Character-driven costume design tailored for the camera. Includes concept sketches, fabric sourcing, custom tailoring, aging/distressing techniques, and onset wardrobe supervisors.',
                         turnaround: '2 - 8 Weeks',
                         packages: {
-                            starter: { name: 'Indie Wardrobe', price: '$3,500', items: ['Costume Plotting', '5 Custom Character Outfits', 'Set Stylist'] },
-                            pro: { name: 'Feature Film Wardrobe', price: '$12,000', items: ['Full Cast Wardrobe', 'Custom Period Tailoring', 'Onset Wardrobe Truck'] },
-                            enterprise: { name: 'Blockbuster Couture', price: '$35,000+', items: ['Specialty Armor/SFX Outfits', 'Multi-Unit Wardrobe Crew', 'International Sourcing'] }
+                            starter: { name: 'Indie Wardrobe', price: 87500, items: ['Costume Plotting', '5 Custom Character Outfits', 'Set Stylist'] },
+                            pro: { name: 'Feature Film Wardrobe', price: 300000, items: ['Full Cast Wardrobe', 'Custom Period Tailoring', 'Onset Wardrobe Truck'] },
+                            enterprise: { name: 'Blockbuster Couture', price: 875000, from: true, items: ['Specialty Armor/SFX Outfits', 'Multi-Unit Wardrobe Crew', 'International Sourcing'] }
                         }
                     },
                     {
@@ -217,9 +260,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Designing and staging show-stopping fashion collections. From pattern making to runway choreography, lighting design, and global press exposure.',
                         turnaround: '1 - 3 Months',
                         packages: {
-                            starter: { name: 'Capsule Collection', price: '$5,000', items: ['8 Custom Look Designs', 'Lookbook Photo Shoot', 'Fabric Sourcing'] },
-                            pro: { name: 'Runway Showcase', price: '$18,000', items: ['20 Look Collection', 'Runway Show Production', 'Model Casting & Makeup'] },
-                            enterprise: { name: 'Global Fashion Week', price: '$50,000+', items: ['Couture Line Creation', 'International Runway Event', 'PR & Media Blitz'] }
+                            starter: { name: 'Capsule Collection', price: 125000, items: ['8 Custom Look Designs', 'Lookbook Photo Shoot', 'Fabric Sourcing'] },
+                            pro: { name: 'Runway Showcase', price: 450000, items: ['20 Look Collection', 'Runway Show Production', 'Model Casting & Makeup'] },
+                            enterprise: { name: 'Global Fashion Week', price: 1250000, from: true, items: ['Couture Line Creation', 'International Runway Event', 'PR & Media Blitz'] }
                         }
                     },
                     {
@@ -231,9 +274,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Refining the visual presence of executives, artists, and public figures. Wardrobe audits, luxury personal shopping, and flawless red carpet styling.',
                         turnaround: '3 - 10 Days',
                         packages: {
-                            starter: { name: 'Executive Refresh', price: '$1,500', items: ['Style Consultation', '3 Key Outfits Curation', 'Personal Shopping'] },
-                            pro: { name: 'Red Carpet Glamour', price: '$4,200', items: ['Custom Runway Outfit', 'Hair & Makeup Team', 'Press Event Prep'] },
-                            enterprise: { name: 'Annual Identity Retainer', price: '$12,000/yr', items: ['Full Seasonal Wardrobes', '24/7 VIP Event Styling', 'Travel Packing Prep'] }
+                            starter: { name: 'Executive Refresh', price: 37500, items: ['Style Consultation', '3 Key Outfits Curation', 'Personal Shopping'] },
+                            pro: { name: 'Red Carpet Glamour', price: 105000, items: ['Custom Runway Outfit', 'Hair & Makeup Team', 'Press Event Prep'] },
+                            enterprise: { name: 'Annual Identity Retainer', price: 300000, unit: 'year', items: ['Full Seasonal Wardrobes', '24/7 VIP Event Styling', 'Travel Packing Prep'] }
                         }
                     },
                     {
@@ -245,9 +288,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Developing raw talent into high-fashion runway models. Directing posture, camera angles, movement, expression, and shooting elite agency portfolios.',
                         turnaround: '2-Week Program',
                         packages: {
-                            starter: { name: 'Portfolio Essentials', price: '$850', items: ['3 Outfit Editorial Shoot', 'Basic Runway Walk', '10 Retouched Images'] },
-                            pro: { name: 'Agency Ready', price: '$2,100', items: ['High Fashion Lookbook Shoot', 'Advanced Runway Coaching', 'Agency Placement Intro'] },
-                            enterprise: { name: 'Supermodel Development', price: '$4,800', items: ['International Model Boot Camp', 'Video Motion Portfolio', 'Contract Consultation'] }
+                            starter: { name: 'Portfolio Essentials', price: 21000, items: ['3 Outfit Editorial Shoot', 'Basic Runway Walk', '10 Retouched Images'] },
+                            pro: { name: 'Agency Ready', price: 52500, items: ['High Fashion Lookbook Shoot', 'Advanced Runway Coaching', 'Agency Placement Intro'] },
+                            enterprise: { name: 'Supermodel Development', price: 120000, items: ['International Model Boot Camp', 'Video Motion Portfolio', 'Contract Consultation'] }
                         }
                     },
                     {
@@ -259,9 +302,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Leading fashion towards zero impact. Development using organic textiles, recycled fibers, natural dye processes, and ethical short-run production lines.',
                         turnaround: '4 - 10 Weeks',
                         packages: {
-                            starter: { name: 'Eco Material Audit', price: '$2,000', items: ['Sustainable Sourcing Map', 'Zero-Waste Patterning', 'Eco Certification Guidance'] },
-                            pro: { name: 'Sustainable Prototype', price: '$6,500', items: ['Eco-Collection Sampling', 'Biodegradable Packaging', 'Impact Report'] },
-                            enterprise: { name: 'Ethical Brand Launch', price: '$20,000+', items: ['Full Sustainable Apparel Line', 'Ethical Factory Contracting', 'Carbon Neutral Supply Chain'] }
+                            starter: { name: 'Eco Material Audit', price: 50000, items: ['Sustainable Sourcing Map', 'Zero-Waste Patterning', 'Eco Certification Guidance'] },
+                            pro: { name: 'Sustainable Prototype', price: 162500, items: ['Eco-Collection Sampling', 'Biodegradable Packaging', 'Impact Report'] },
+                            enterprise: { name: 'Ethical Brand Launch', price: 500000, from: true, items: ['Full Sustainable Apparel Line', 'Ethical Factory Contracting', 'Carbon Neutral Supply Chain'] }
                         }
                     }
                 ]
@@ -275,7 +318,7 @@ const ECOSYSTEM_DIVISIONS = {
                 accentColor: '#4A633D',
                 bannerImg: './assets/images/hope-foundation.jpg',
                 description: 'The social conscience of KABOVELO 360. We deploy creative grants, film scholarships, community screening tours, and leadership programs to elevate underrepresented voices.',
-                stats: '$150k+ Grants Awarded | 12,000+ Community Audience',
+                stats: 'K3.8M+ Grants Awarded | 12,000+ Community Audience',
                 services: [
                     {
                         id: 'hf-1',
@@ -286,9 +329,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Establishing accessible creative hubs in underserved communities. Providing cameras, art supplies, music gear, and structured mentorship to ignite young talent.',
                         turnaround: 'Ongoing Community Initiative',
                         packages: {
-                            starter: { name: 'Community Hub Grant', price: 'Grant Supported', items: ['Arts Equipment Pack', 'Weekly Workshops', 'Youth Mentor'] },
-                            pro: { name: 'Regional Youth Program', price: '$5,000 Sponsorship', items: ['Sponsor 15 Creative Youth', 'Exhibition Event', 'Equipment Donation'] },
-                            enterprise: { name: 'Ecosystem Creative Center', price: '$25,000 Support', items: ['Build Fully Equipped Youth Studio', 'Year-Round Curriculum', 'Global Showcase'] }
+                            starter: { name: 'Community Hub Grant', price: 0, payable: false, priceLabel: 'Grant Supported', items: ['Arts Equipment Pack', 'Weekly Workshops', 'Youth Mentor'] },
+                            pro: { name: 'Regional Youth Program', price: 125000, note: 'Sponsorship', items: ['Sponsor 15 Creative Youth', 'Exhibition Event', 'Equipment Donation'] },
+                            enterprise: { name: 'Ecosystem Creative Center', price: 625000, note: 'Support', items: ['Build Fully Equipped Youth Studio', 'Year-Round Curriculum', 'Global Showcase'] }
                         }
                     },
                     {
@@ -300,9 +343,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Funding promising young storytellers to attend KABOVELO Film Academy with full tuition coverage, living stipends, and guaranteed film set placement.',
                         turnaround: 'Bi-Annual Scholarship Cycles',
                         packages: {
-                            starter: { name: 'Single Scholar Support', price: '$2,500', items: ['Full Academy Tuition', 'Gear Allowance', '1-on-1 Industry Mentor'] },
-                            pro: { name: 'Cohort Patron', price: '$10,000', items: ['Sponsor 5 Student Scholars', 'Co-Named Scholarship', 'Graduation Short Feature'] },
-                            enterprise: { name: 'Endowment Fund Partner', price: '$50,000+', items: ['Permanent Scholarship Trust', 'Board Advisory Seat', 'Impact Documentary'] }
+                            starter: { name: 'Single Scholar Support', price: 62500, items: ['Full Academy Tuition', 'Gear Allowance', '1-on-1 Industry Mentor'] },
+                            pro: { name: 'Cohort Patron', price: 250000, items: ['Sponsor 5 Student Scholars', 'Co-Named Scholarship', 'Graduation Short Feature'] },
+                            enterprise: { name: 'Endowment Fund Partner', price: 1250000, from: true, items: ['Permanent Scholarship Trust', 'Board Advisory Seat', 'Impact Documentary'] }
                         }
                     },
                     {
@@ -314,9 +357,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Pop-up outdoor cinema units equipped with inflatable 4K screens and solar power, screening inspirational and educational cinema followed by community dialogues.',
                         turnaround: 'Mobile Cinema Deployments',
                         packages: {
-                            starter: { name: 'Local Cinema Night', price: '$1,500', items: ['Mobile Screen & Audio', 'Community Screening Permit', 'Panel Discussion'] },
-                            pro: { name: 'Regional Impact Tour', price: '$6,000', items: ['5 Community Stops', 'Educational Film Screenings', 'Youth Workshop Sessions'] },
-                            enterprise: { name: 'National Cinema Outreach', price: '$20,000+', items: ['20 City/Town Tour', 'Sponsorship Branding', 'Documentary Tour Feature'] }
+                            starter: { name: 'Local Cinema Night', price: 37500, items: ['Mobile Screen & Audio', 'Community Screening Permit', 'Panel Discussion'] },
+                            pro: { name: 'Regional Impact Tour', price: 150000, items: ['5 Community Stops', 'Educational Film Screenings', 'Youth Workshop Sessions'] },
+                            enterprise: { name: 'National Cinema Outreach', price: 500000, from: true, items: ['20 City/Town Tour', 'Sponsorship Branding', 'Documentary Tour Feature'] }
                         }
                     },
                     {
@@ -328,9 +371,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Fusing Film Farm storytelling and Marketing Lab strategy to create powerful public service announcements and advocacy films that drive policy and awareness.',
                         turnaround: '3 - 8 Weeks',
                         packages: {
-                            starter: { name: 'Advocacy Spot', price: '$4,000', items: ['60-Sec PSA Production', 'Social Media Activation', 'Impact Kit'] },
-                            pro: { name: 'Global Impact Film', price: '$15,000', items: ['Short Impact Doc (15 min)', 'Distribution Campaign', 'NGO Partner Activation'] },
-                            enterprise: { name: 'Movement Infrastructure', price: '$45,000+', items: ['Full Multimedia Campaign', 'Policy Maker Screenings', 'Global PR Blitz'] }
+                            starter: { name: 'Advocacy Spot', price: 100000, items: ['60-Sec PSA Production', 'Social Media Activation', 'Impact Kit'] },
+                            pro: { name: 'Global Impact Film', price: 375000, items: ['Short Impact Doc (15 min)', 'Distribution Campaign', 'NGO Partner Activation'] },
+                            enterprise: { name: 'Movement Infrastructure', price: 1125000, from: true, items: ['Full Multimedia Campaign', 'Policy Maker Screenings', 'Global PR Blitz'] }
                         }
                     },
                     {
@@ -342,9 +385,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Dismantling industry gender gaps by providing seed capital, executive producers, and marketing support to women-led film and fashion projects.',
                         turnaround: 'Annual Grant Cycle',
                         packages: {
-                            starter: { name: 'Seed Grant Partner', price: '$3,000', items: ['Direct Grant to Female Director', 'Production Support', 'Festival Prep'] },
-                            pro: { name: 'Production Grant Sponsor', price: '$12,000', items: ['Fund Short Film or Runway Line', 'Full Ecosystem Mentorship', 'Executive Producer Credit'] },
-                            enterprise: { name: 'Leadership Incubator', price: '$40,000+', items: ['Fund 4 Female-Led Projects', 'Global Festival Premiere', 'Impact Showcase'] }
+                            starter: { name: 'Seed Grant Partner', price: 75000, items: ['Direct Grant to Female Director', 'Production Support', 'Festival Prep'] },
+                            pro: { name: 'Production Grant Sponsor', price: 300000, items: ['Fund Short Film or Runway Line', 'Full Ecosystem Mentorship', 'Executive Producer Credit'] },
+                            enterprise: { name: 'Leadership Incubator', price: 1000000, from: true, items: ['Fund 4 Female-Led Projects', 'Global Festival Premiere', 'Impact Showcase'] }
                         }
                     }
                 ]
@@ -369,9 +412,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Architecting unforgettable brand identities. Includes brand voice, typography, color architecture, logo systems, archetype positioning, and complete brand books.',
                         turnaround: '2 - 4 Weeks',
                         packages: {
-                            starter: { name: 'Brand Launchpack', price: '$2,800', items: ['Logo & Visual Suite', 'Typography & Palette', 'Basic Style Guide'] },
-                            pro: { name: '360° Corporate Brand', price: '$7,500', items: ['Full Brand Architecture', 'Comprehensive Brand Book', 'Collateral Design'] },
-                            enterprise: { name: 'Global Brand Rebrand', price: '$22,000+', items: ['Global Market Positioning', 'Trademark Clearance Prep', 'Internal & External Rollout'] }
+                            starter: { name: 'Brand Launchpack', price: 70000, items: ['Logo & Visual Suite', 'Typography & Palette', 'Basic Style Guide'] },
+                            pro: { name: '360° Corporate Brand', price: 187500, items: ['Full Brand Architecture', 'Comprehensive Brand Book', 'Collateral Design'] },
+                            enterprise: { name: 'Global Brand Rebrand', price: 550000, from: true, items: ['Global Market Positioning', 'Trademark Clearance Prep', 'Internal & External Rollout'] }
                         }
                     },
                     {
@@ -383,9 +426,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Maximizing ROI through precision audience targeting, A/B ad creative testing, funnel optimization, and real-time performance analytics dashboards.',
                         turnaround: 'Monthly Retainer Workflow',
                         packages: {
-                            starter: { name: 'Growth Engine', price: '$2,000/mo', items: ['Up to $5k Ad Spend Managed', 'Weekly Optimization', 'Ad Creative Variations'] },
-                            pro: { name: 'Scale Architecture', price: '$5,500/mo', items: ['Up to $25k Ad Spend Managed', 'Multi-Funnel Strategy', 'Custom Analytics Dashboard'] },
-                            enterprise: { name: 'Enterprise Performance', price: '$14,000/mo', items: ['Omnichannel Ad Management', 'Dedicated Data Scientist', 'High-Scale Growth'] }
+                            starter: { name: 'Growth Engine', price: 50000, unit: 'month', items: ['Up to $5k Ad Spend Managed', 'Weekly Optimization', 'Ad Creative Variations'] },
+                            pro: { name: 'Scale Architecture', price: 137500, unit: 'month', items: ['Up to $25k Ad Spend Managed', 'Multi-Funnel Strategy', 'Custom Analytics Dashboard'] },
+                            enterprise: { name: 'Enterprise Performance', price: 350000, unit: 'month', items: ['Omnichannel Ad Management', 'Dedicated Data Scientist', 'High-Scale Growth'] }
                         }
                     },
                     {
@@ -397,23 +440,23 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Securing tier-1 press coverage across fashion, film, tech, and business publications (Forbes, Vogue, Variety, TechCrunch).',
                         turnaround: 'Campaign or Retainer',
                         packages: {
-                            starter: { name: 'Press Blast', price: '$2,500', items: ['Press Release Drafting', 'Targeted Syndication', 'Guaranteed 5 Features'] },
-                            pro: { name: 'Tier-1 Media Blitz', price: '$7,000', items: ['Top-Tier Magazine Placement', 'Founder Interviews', 'Press Conference'] },
-                            enterprise: { name: 'Global PR Retainer', price: '$18,000/mo', items: ['Dedicated Publicist', '24/7 Crisis Management', 'International Press Tour'] }
+                            starter: { name: 'Press Blast', price: 62500, items: ['Press Release Drafting', 'Targeted Syndication', 'Guaranteed 5 Features'] },
+                            pro: { name: 'Tier-1 Media Blitz', price: 175000, items: ['Top-Tier Magazine Placement', 'Founder Interviews', 'Press Conference'] },
+                            enterprise: { name: 'Global PR Retainer', price: 450000, unit: 'month', items: ['Dedicated Publicist', '24/7 Crisis Management', 'International Press Tour'] }
                         }
                     },
                     {
                         id: 'ml-4',
                         title: 'Social Media Management',
                         division: 'Marketing Lab',
-                        image: './assets/images/stock/social-media.jpg',
+                        image: './assets/images/stock/marketing-desk.jpg',
                         shortDesc: 'Full content creation, community growth, and channel management.',
                         fullDesc: 'End-to-end management of Instagram, TikTok, LinkedIn, and YouTube channels. Scripting reels, high-aesthetic photo posts, community engagement, and analytics.',
                         turnaround: 'Monthly Retainer',
                         packages: {
-                            starter: { name: 'Core Presence', price: '$1,800/mo', items: ['12 Posts / Reels Monthly', 'Caption & Hashtag Strategy', 'Monthly Analytics'] },
-                            pro: { name: 'High-Volume Viral', price: '$4,200/mo', items: ['25 Cinematic Reels/Posts', 'Daily Community Mgmt', 'Influencer Collabs'] },
-                            enterprise: { name: '360 Channel Takeover', price: '$10,000/mo', items: ['Daily High-End Content', 'Dedicated On-Set Creator', 'Global Audience Scaling'] }
+                            starter: { name: 'Core Presence', price: 45000, unit: 'month', items: ['12 Posts / Reels Monthly', 'Caption & Hashtag Strategy', 'Monthly Analytics'] },
+                            pro: { name: 'High-Volume Viral', price: 105000, unit: 'month', items: ['25 Cinematic Reels/Posts', 'Daily Community Mgmt', 'Influencer Collabs'] },
+                            enterprise: { name: '360 Channel Takeover', price: 250000, unit: 'month', items: ['Daily High-End Content', 'Dedicated On-Set Creator', 'Global Audience Scaling'] }
                         }
                     },
                     {
@@ -425,9 +468,9 @@ const ECOSYSTEM_DIVISIONS = {
                         fullDesc: 'Leveraging Film Farm visual production to craft viral UGC and cinematic ads, distributed through curated influencer creator networks.',
                         turnaround: '2 - 3 Weeks',
                         packages: {
-                            starter: { name: 'Creator Pack', price: '$3,000', items: ['5 Micro-Influencer Collabs', '3 Cinematic Social Ads', 'Usage Rights'] },
-                            pro: { name: 'Influencer Campaign', price: '$9,500', items: ['15 Macro Creator Placements', 'Full Content Production', 'Tracking Links & ROI'] },
-                            enterprise: { name: 'Celebrity Ambassador', price: '$30,000+', items: ['A-List Celebrity Alignment', 'High-Production Commercial', 'Global Campaign Rights'] }
+                            starter: { name: 'Creator Pack', price: 75000, items: ['5 Micro-Influencer Collabs', '3 Cinematic Social Ads', 'Usage Rights'] },
+                            pro: { name: 'Influencer Campaign', price: 237500, items: ['15 Macro Creator Placements', 'Full Content Production', 'Tracking Links & ROI'] },
+                            enterprise: { name: 'Celebrity Ambassador', price: 750000, from: true, items: ['A-List Celebrity Alignment', 'High-Production Commercial', 'Global Campaign Rights'] }
                         }
                     }
                 ]
@@ -485,7 +528,7 @@ const WORK_PROJECTS = [
     {
         id: 'w-ff-1', division: 'film-farm', title: 'Roadside', type: 'Narrative Short Film', client: 'Film Farm Originals', year: '2025',
         image: './assets/images/stock/cinema-camera.jpg',
-        gallery: ['./assets/images/stock/film-production.jpg', './assets/images/stock/location-scouting.jpg', './assets/images/stock/post-production.jpg'],
+        gallery: ['./assets/images/team/directing-actors-bw.jpg', './assets/images/stock/location-scouting.jpg', './assets/images/stock/post-production.jpg'],
         summary: 'A 22-minute road drama about two strangers sharing a long drive home — shot on location over five days.',
         challenge: 'A micro-budget story needing wide desert landscapes, a moving-car rig and a tight 5-day schedule.',
         approach: 'Script development, location scouting and a lean 12-person crew running dual cinema cameras, followed by an in-house colour grade and 5.1 mix.',
@@ -514,7 +557,7 @@ const WORK_PROJECTS = [
     },
     {
         id: 'w-ff-4', division: 'film-farm', title: 'Brand Anthem', type: 'TV Commercial', client: 'Financial Services Brand', year: '2024',
-        image: './assets/images/stock/film-production.jpg',
+        image: './assets/images/team/directing-actors-bw.jpg',
         gallery: ['./assets/images/stock/post-production.jpg', './assets/images/stock/script-writing.jpg'],
         summary: 'A 60-second anthem commercial celebrating everyday ambition, with 15-second social cut-downs.',
         challenge: 'One shoot needed to deliver TV, cinema and vertical social formats.',
@@ -579,7 +622,7 @@ const WORK_PROJECTS = [
     {
         id: 'w-fav-2', division: 'fashion-avenue', title: 'Roadside Wardrobe', type: 'Film Costume Design', client: 'Film Farm Originals', year: '2025',
         image: './assets/images/stock/costume-design.jpg',
-        gallery: ['./assets/images/stock/styling.jpg', './assets/images/stock/film-production.jpg'],
+        gallery: ['./assets/images/stock/styling.jpg', './assets/images/team/directing-actors-bw.jpg'],
         summary: 'Character wardrobe for the short film Roadside — every outfit aged and fitted for the camera.',
         challenge: 'Make costumes feel lived-in and consistent across a five-day continuity-heavy shoot.',
         approach: 'Character costume plots, distressing techniques and an on-set wardrobe supervisor.',
@@ -653,7 +696,7 @@ const WORK_PROJECTS = [
     {
         id: 'w-ml-1', division: 'marketing-lab', title: 'Digital Bank Launch', type: 'Performance Campaign', client: 'Financial Services Brand', year: '2025',
         image: './assets/images/stock/marketing-dashboard.jpg',
-        gallery: ['./assets/images/stock/analytics.jpg', './assets/images/stock/social-media.jpg'],
+        gallery: ['./assets/images/stock/analytics.jpg', './assets/images/stock/workspace.jpg'],
         summary: 'A multi-channel launch campaign for a new mobile banking app, combining film content with paid media.',
         challenge: 'Drive app downloads in a crowded market within a 90-day launch window.',
         approach: 'Film Farm-produced ads, audience testing across Meta, Google and TikTok, and weekly optimisation.',
@@ -673,7 +716,7 @@ const WORK_PROJECTS = [
     {
         id: 'w-ml-3', division: 'marketing-lab', title: 'Creator Season', type: 'Influencer Campaign', client: 'Beauty & Lifestyle Brand', year: '2025',
         image: './assets/images/stock/influencer.jpg',
-        gallery: ['./assets/images/stock/social-media.jpg', './assets/images/stock/fashion-portrait.jpg'],
+        gallery: ['./assets/images/stock/workspace.jpg', './assets/images/stock/fashion-portrait.jpg'],
         summary: 'A seasonal campaign pairing cinematic ads with a network of local creators.',
         challenge: 'Build authentic reach with a younger audience who skip traditional ads.',
         approach: 'Creator selection, co-created content, tracked links and Fashion Avenue styling for hero shoots.',

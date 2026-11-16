@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="./assets/js/layout.js"></script>
@@ -20,7 +20,8 @@
     <div id="pageLoader" role="status" aria-label="Loading">
         <div class="loader-mark"><div class="loader-ring"></div><div class="loader-ring inner"></div><div class="loader-core">360</div></div>
         <div class="loader-word">KABOVELO</div>
-        <div class="loader-bar"></div>
+        <div class="loader-bar"><span></span></div>
+        <div class="loader-pct" aria-hidden="true">0%</div>
     </div>
 
     <div id="siteHeader"></div>
@@ -32,13 +33,13 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/90 to-obsidian/55"></div>
                 <div class="absolute inset-0 bg-[radial-gradient(#2E352F_1px,transparent_1px)] [background-size:32px_32px] opacity-20"></div>
             </div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10 w-full">
                 <div class="max-w-3xl">
                     <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-armyGreenBright/40 mb-6">
                         <span class="w-2 h-2 rounded-full bg-armyGreenBright"></span>
                         <span class="text-[10px] sm:text-xs uppercase tracking-widest text-armyGreenLight font-semibold">Five specialist teams. One creative ecosystem.</span>
                     </span>
-                    <h1 class="font-serif text-4xl sm:text-6xl font-black tracking-tight text-white mb-5 leading-tight">
+                    <h1 class="font-serif text-4xl sm:text-6xl font-semibold tracking-tight text-white mb-5 leading-tight">
                         Meet the divisions <span class="army-gradient-text">behind the vision.</span>
                     </h1>
                     <p class="max-w-2xl text-base sm:text-lg text-greyLight font-light leading-relaxed">
@@ -49,16 +50,16 @@
         </section>
 
         <section class="pb-20 sm:pb-24 pt-4 bg-obsidian">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
                 <div class="flex flex-wrap gap-2 sm:gap-3 mb-8" id="divisionTabs"></div>
                 <div id="divisionDisplayArea" data-detailed="true" class="glass-panel rounded-3xl p-4 sm:p-10 border border-armyGreenBright/30 relative overflow-hidden transition-opacity duration-300 min-h-[500px]"></div>
             </div>
         </section>
 
-        <section class="py-20 bg-gradient-to-r from-armyGreenDark via-tacticalBlack to-obsidian border-y border-charcoalBorder">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Bring the right teams together</span>
-                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-3 mb-5">Let’s build something across the ecosystem.</h2>
+        <section class="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-armyGreenDark via-tacticalBlack to-obsidian border-y border-charcoalBorder">
+            <div class="max-w-5xl mx-auto px-5 sm:px-6 lg:px-8 text-center reveal">
+                <span class="eyebrow">Bring the right teams together</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-white mt-3 mb-5">Let’s build something across the ecosystem.</h2>
                 <p class="max-w-2xl mx-auto text-sm sm:text-base text-greyMuted leading-relaxed mb-8">Tell us what you are working on. We can help connect your project with the right mix of creative expertise.</p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
                     <a href="./synergy.html" class="px-8 py-4 rounded-full bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-all border border-armyGreenLight/30">Combine Divisions</a>

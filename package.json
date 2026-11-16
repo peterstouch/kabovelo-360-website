@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --minify",
+    "build": "node scripts/build-catalog.mjs && tailwindcss -i ./src/input.css -o ./assets/css/styles.css --minify",
     "watch": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --watch",
-    "start": "python3 -m http.server 8000"
+    "start": "python3 -m http.server 8000",
+    "catalog": "node scripts/build-catalog.mjs"
   },
   "keywords": [],
   "author": "",
