@@ -1,5 +1,5 @@
 // KABOVELO 360 — ONLINE BOOKING, ENROLLMENT & MOBILE MONEY PAYMENT
-// Used by checkout.html and enroll.html. Talks to the payment API (api/ folder).
+// Used by /checkout/ and /enroll/. Talks to the payment API (api/ folder).
 
 const NETWORKS = {
     MTN: { name: 'MTN MoMo', color: '#FFCB05', text: '#1a1a1a', prompt: 'Enter your MoMo PIN on the prompt to approve.' },
@@ -179,7 +179,7 @@ function renderPayment(state, extra = {}) {
 
             <div class="mt-6 flex flex-col sm:flex-row gap-3 no-print">
                 <button type="button" onclick="window.print()" class="flex-1 py-3 rounded-xl glass-card text-xs font-semibold uppercase tracking-wider text-greyLight hover:text-white"><i class="fa-solid fa-print mr-1"></i> Print receipt</button>
-                <a href="./index.html" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold uppercase tracking-wider text-white text-center">Back to home</a>
+                <a href="/" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold uppercase tracking-wider text-white text-center">Back to home</a>
             </div>
         </div>`;
     }
@@ -357,8 +357,8 @@ function renderCart() {
                 <h3 class="font-serif text-xl text-white">Your booking is empty</h3>
                 <p class="text-sm text-greyMuted mt-2 mb-6">Choose a service package to book and pay online.</p>
                 <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="./services.html" class="btn-primary px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider">Browse services</a>
-                    <a href="./enroll.html" class="px-6 py-3 rounded-full glass-card text-xs font-bold uppercase tracking-wider text-white">Film Academy enrollment</a>
+                    <a href="/services/" class="btn-primary px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider">Browse services</a>
+                    <a href="/enroll/" class="px-6 py-3 rounded-full glass-card text-xs font-bold uppercase tracking-wider text-white">Film Academy enrollment</a>
                 </div>
             </div>`;
     } else {
@@ -392,7 +392,7 @@ function renderCart() {
                         <span class="sm:ml-auto font-serif text-base text-white whitespace-nowrap">${formatKwacha(pkg.price * (pkg.unit ? c.qty : 1))}</span>
                     </div>
                     <p class="text-[11px] text-greyMuted mt-2 leading-relaxed">${pkg.items.map(esc).join(' · ')}</p>` : `
-                    <p class="text-xs text-amber-200/90 mt-3"><i class="fa-solid fa-circle-info mr-1"></i>This service is above the mobile money limit. <a class="underline" href="./contact.html?division=${encodeURIComponent(s.division)}&service=${encodeURIComponent(s.title)}">Request a quote</a> instead.</p>`}
+                    <p class="text-xs text-amber-200/90 mt-3"><i class="fa-solid fa-circle-info mr-1"></i>This service is above the mobile money limit. <a class="underline" href="/contact/?division=${encodeURIComponent(s.division)}&service=${encodeURIComponent(s.title)}">Request a quote</a> instead.</p>`}
                 </div>
             </div>`;
         }).join('');
@@ -418,7 +418,7 @@ function renderCart() {
     const warn = document.getElementById('sumWarning');
     warn.classList.toggle('hidden', !over && !unpayable.length);
     warn.innerHTML = over
-        ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Mobile money payments are limited to ${formatKwacha(SITE.onlineLimit)}. Remove an item or <a class="underline" href="./contact.html">request a quote</a>.`
+        ? `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Mobile money payments are limited to ${formatKwacha(SITE.onlineLimit)}. Remove an item or <a class="underline" href="/contact/">request a quote</a>.`
         : unpayable.length ? '<i class="fa-solid fa-circle-info mr-1"></i> Items above the mobile money limit are not included in the total.' : '';
     const btn = document.getElementById('payButton');
     btn.disabled = !t.lines.length || over;
@@ -497,7 +497,7 @@ function renderLevels() {
             </span>
             <span class="block font-serif text-lg text-armyGreenLight mt-1">${formatPrice(p)}</span>
             <ul class="mt-3 space-y-1.5 text-[11px] text-greyLight">${p.items.map(it => `<li class="flex gap-2"><i class="fa-solid fa-check text-armyGreenLight mt-0.5"></i>${esc(it)}</li>`).join('')}</ul>
-            ${ok ? '' : `<a href="./contact.html?division=Film%20Academy&service=${encodeURIComponent(c.title)}&package=${encodeURIComponent(p.name)}" class="inline-block mt-3 text-[11px] text-amber-200 underline">Request a quote</a>`}
+            ${ok ? '' : `<a href="/contact/?division=Film%20Academy&service=${encodeURIComponent(c.title)}&package=${encodeURIComponent(p.name)}" class="inline-block mt-3 text-[11px] text-amber-200 underline">Request a quote</a>`}
             <span class="choice-tick"><i class="fa-solid fa-check"></i></span>
         </label>`;
     }).join('');
@@ -520,7 +520,7 @@ function renderEnrollSummary() {
     const c = enrollState.course ? findService(enrollState.course) : null;
     const p = c && enrollState.tier ? c.packages[enrollState.tier] : null;
     const intake = ACADEMY_INTAKES.find(i => i.id === enrollState.intake);
-    document.getElementById('sumCourseImg').src = c ? c.image : './assets/images/team/academy-classroom.jpg';
+    document.getElementById('sumCourseImg').src = c ? c.image : '/assets/images/team/academy-classroom.jpg';
     document.getElementById('sumCourse').textContent = c ? c.title : 'Choose a course';
     document.getElementById('sumLevel').textContent = p ? p.name : '—';
     document.getElementById('sumIntake').textContent = intake ? `${intake.label} · starts ${intake.starts}` : '—';

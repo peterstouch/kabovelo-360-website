@@ -4,19 +4,23 @@ A static multi-page website built with Tailwind CSS and vanilla JavaScript.
 
 ## Pages
 
-| Page | File | What it shows |
+| Page | Address | What it shows |
 | --- | --- | --- |
-| Home | `index.html` | Hero, division tabs, founder spotlight, featured work tabs, client logos, impact counters |
-| About | `about.html` | Story, mission, founder profile, teaching-session gallery, client logos |
-| Divisions | `divisions.html` | Tabbed view of all 5 divisions with services, demo work and (Film Academy) founder teaching photos. Deep-link with `divisions.html#film-academy` |
-| Services | `services.html` | Searchable catalog with tier modals. Filter by link: `services.html?division=Film%20Farm` |
-| Our Work | `work.html` | Demo case studies, one tab per division. Deep-link with `work.html#fashion-avenue` |
-| Synergy Builder | `synergy.html` | Multi-division package builder with discounts |
-| Impact | `impact.html` | Counters, Hope Foundation stories & programs, partners |
-| Contact | `contact.html` | Contact details, form (sent to admin@ by email), FAQ |
-| Enroll | `enroll.html` | Film Academy online enrollment: course, level, intake, student details, mobile money payment |
-| Checkout | `checkout.html` | Book & pay for services/packages with mobile money (`checkout.html?items=ff-1:starter,ml-4:starter:2`) |
-| Legal | `legal.html` | Privacy / Terms / Grant Transparency tabs (`#privacy`, `#terms`, `#grants`) |
+| Home | `/` (`index.html`) | Hero, division tabs, founder spotlight, featured work tabs, client logos, impact counters |
+| About | `/about/` (`about/index.html`) | Story, mission, founder profile, teaching-session gallery, client logos |
+| Divisions | `/divisions/` (`divisions/index.html`) | Tabbed view of all 5 divisions with services, demo work and (Film Academy) founder teaching photos. Deep-link with `/divisions/#film-academy` |
+| Services | `/services/` (`services/index.html`) | Searchable catalog with tier modals. Filter by link: `/services/?division=Film%20Farm` |
+| Our Work | `/work/` (`work/index.html`) | Demo case studies, one tab per division. Deep-link with `/work/#fashion-avenue` |
+| Synergy Builder | `/synergy/` (`synergy/index.html`) | Multi-division package builder with discounts |
+| Impact | `/impact/` (`impact/index.html`) | Counters, Hope Foundation stories & programs, partners |
+| Contact | `/contact/` (`contact/index.html`) | Contact details, form (sent to admin@ by email), FAQ |
+| Enroll | `/enroll/` (`enroll/index.html`) | Film Academy online enrollment: course, level, intake, student details, mobile money payment |
+| Checkout | `/checkout/` (`checkout/index.html`) | Book & pay for services/packages with mobile money (`/checkout/?items=ff-1:starter,ml-4:starter:2`) |
+| Legal | `/legal/` (`legal/index.html`) | Privacy / Terms / Grant Transparency tabs (`#privacy`, `#terms`, `#grants`) |
+
+Each page lives in its own folder so addresses are clean (`kabovelo360.co.zm/enroll/`).
+The old `*.html` files in the root are tiny redirects so previously shared links keep working.
+All links and images use root paths (`/assets/...`), so the site must be served from the domain root.
 
 ## Project structure
 

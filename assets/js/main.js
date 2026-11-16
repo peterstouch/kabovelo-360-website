@@ -20,14 +20,14 @@ function tierAction(service, tierKey) {
     const pkg = service.packages[tierKey];
     if (pkg.payable === false) return { href: contactUrl({ division: service.division, service: service.title, package: pkg.name }), label: 'Apply', icon: 'fa-file-signature' };
     if (!isPayableOnline(pkg)) return { href: contactUrl({ division: service.division, service: service.title, package: pkg.name }), label: 'Request Quote', icon: 'fa-file-invoice' };
-    if (service.division === 'Film Academy') return { href: `./enroll.html?course=${service.id}&tier=${tierKey}`, label: 'Enroll & Pay', icon: 'fa-graduation-cap' };
-    return { href: `./checkout.html?items=${service.id}:${tierKey}`, label: 'Book & Pay', icon: 'fa-mobile-screen-button' };
+    if (service.division === 'Film Academy') return { href: `/enroll/?course=${service.id}&tier=${tierKey}`, label: 'Enroll & Pay', icon: 'fa-graduation-cap' };
+    return { href: `/checkout/?items=${service.id}:${tierKey}`, label: 'Book & Pay', icon: 'fa-mobile-screen-button' };
 }
 
 function contactUrl(params) {
     const q = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => { if (v) q.set(k, v); });
-    return `./contact.html${q.toString() ? '?' + q.toString() : ''}`;
+    return `/contact/${q.toString() ? '?' + q.toString() : ''}`;
 }
 
 // =================================================================
@@ -189,7 +189,7 @@ function injectModals() {
             <div class="p-4 sm:p-5 border-t border-charcoalBorder bg-tacticalBlack flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
                 <button type="button" onclick="closeModalById('serviceModal')" class="px-5 py-3 rounded-xl glass-card text-greyLight hover:text-white text-xs uppercase font-semibold">Close</button>
                 <button type="button" id="modalAddToPackage" class="px-5 py-3 rounded-xl border border-armyGreenBright/50 text-armyGreenLight hover:bg-armyGreen/30 text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-plus mr-1"></i> Add to Package</button>
-                <a id="modalBookLink" href="./contact.html" class="px-6 py-3 rounded-xl bg-armyGreenBright text-white text-xs font-bold uppercase tracking-wider hover:scale-105 transition-all shadow-md text-center">Book Service Package</a>
+                <a id="modalBookLink" href="/contact/" class="px-6 py-3 rounded-xl bg-armyGreenBright text-white text-xs font-bold uppercase tracking-wider hover:scale-105 transition-all shadow-md text-center">Book Service Package</a>
             </div>
         </div>
     </div>
@@ -328,7 +328,7 @@ function renderWorkModal() {
                 <div class="flex flex-wrap gap-2">${p.tags.map(t => `<span class="text-[10px] px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-greyLight">${t}</span>`).join('')}</div>
                 <div class="space-y-2.5">
                     <a href="${contactUrl({ division: div.name, project: p.title })}" class="block w-full text-center py-3 rounded-xl bg-gradient-to-r from-armyGreen via-armyGreenMedium to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider border border-armyGreenLight/30">Start a Similar Project</a>
-                    <a href="./divisions.html#${div.id}" class="block w-full text-center py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider">Explore ${div.name}</a>
+                    <a href="/divisions/#${div.id}" class="block w-full text-center py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider">Explore ${div.name}</a>
                 </div>
                 ${workModalList.length > 1 ? `<p class="text-[10px] text-greyMuted text-center font-mono">${currentWorkIndex + 1} / ${workModalList.length}</p>` : ''}
             </aside>
@@ -416,11 +416,11 @@ function switchDivision(divisionKey, opts = {}) {
                         <h4 class="font-serif text-xl font-bold text-white">Engage ${divData.name}</h4>
                         <p class="text-xs text-greyMuted leading-relaxed">Book a division-specific consultation or integrate this pillar into a multi-disciplinary package.</p>
                         <div class="space-y-3">
-                            ${divisionKey === 'film-academy' ? `<a href="./enroll.html" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll Online &amp; Pay</a>` : `<a href="./services.html?division=${encodeURIComponent(divData.name)}" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; Pay Online</a>`}
-                            <a href="./services.html?division=${encodeURIComponent(divData.name)}" class="block text-center w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
+                            ${divisionKey === 'film-academy' ? `<a href="/enroll/" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll Online &amp; Pay</a>` : `<a href="/services/?division=${encodeURIComponent(divData.name)}" class="btn-primary w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; Pay Online</a>`}
+                            <a href="/services/?division=${encodeURIComponent(divData.name)}" class="block text-center w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
                                 Explore All ${divData.services.length} ${divData.name} Packages
                             </a>
-                            <a href="./work.html#${divData.id}" class="block text-center w-full py-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
+                            <a href="/work/#${divData.id}" class="block text-center w-full py-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-white font-semibold text-xs uppercase tracking-wider transition-all">
                                 See ${divData.name} Work
                             </a>
                             <a href="${contactUrl({ division: divData.name })}" class="block text-center w-full py-3 rounded-xl glass-card text-greyLight hover:text-white font-semibold text-xs uppercase tracking-wider transition-all">
@@ -438,7 +438,7 @@ function switchDivision(divisionKey, opts = {}) {
                         <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">In the Classroom</span>
                         <h4 class="font-serif text-2xl font-bold text-white mt-1">Taught by our founder</h4>
                     </div>
-                    <a href="./about.html#founder" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">Meet the founder <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="/about/#founder" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">Meet the founder <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">${sessionsGalleryHTML(4)}</div>
             </div>` : ''}
@@ -450,7 +450,7 @@ function switchDivision(divisionKey, opts = {}) {
                         <span class="text-xs font-bold uppercase tracking-widest text-armyGreenLight">Featured Work</span>
                         <h4 class="font-serif text-2xl font-bold text-white mt-1">${divData.name} projects</h4>
                     </div>
-                    <a href="./work.html#${divData.id}" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">All work <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="/work/#${divData.id}" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">All work <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-work-list="${divisionKey}">${work.map(workCardHTML).join('')}</div>
             </div>` : ''}
@@ -617,7 +617,7 @@ function renderWorkGrid(key, updateHash) {
                         <p class="text-xs text-greyMuted">${div.tagline}</p>
                     </div>
                 </div>
-                <a href="./divisions.html#${div.id}" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">About this division <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/divisions/#${div.id}" class="text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white whitespace-nowrap">About this division <i class="fa-solid fa-arrow-right"></i></a>
             </div>` : '';
     }
 
@@ -784,7 +784,7 @@ function checkoutSynergyPackage() {
         return tier ? `${s.id}:${tier}` : null;
     }).filter(Boolean);
     if (!items.length) { showToast('These services are above the mobile money limit — please request a proposal instead.'); return; }
-    location.href = `./checkout.html?items=${items.join(',')}`;
+    location.href = `/checkout/?items=${items.join(',')}`;
 }
 
 // Sends a contact / proposal message through the API

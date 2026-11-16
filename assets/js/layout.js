@@ -5,14 +5,14 @@
 document.documentElement.classList.add('js');
 
 const NAV_LINKS = [
-    { page: 'home', href: './index.html', label: 'Home' },
-    { page: 'about', href: './about.html', label: 'About' },
-    { page: 'divisions', href: './divisions.html', label: 'Divisions' },
-    { page: 'services', href: './services.html', label: 'Services' },
-    { page: 'work', href: './work.html', label: 'Our Work' },
-    { page: 'synergy', href: './synergy.html', label: 'Synergy Builder' },
-    { page: 'impact', href: './impact.html', label: 'Impact' },
-    { page: 'contact', href: './contact.html', label: 'Contact' }
+    { page: 'home', href: '/', label: 'Home' },
+    { page: 'about', href: '/about/', label: 'About' },
+    { page: 'divisions', href: '/divisions/', label: 'Divisions' },
+    { page: 'services', href: '/services/', label: 'Services' },
+    { page: 'work', href: '/work/', label: 'Our Work' },
+    { page: 'synergy', href: '/synergy/', label: 'Synergy Builder' },
+    { page: 'impact', href: '/impact/', label: 'Impact' },
+    { page: 'contact', href: '/contact/', label: 'Contact' }
 ];
 
 // Update these with the real social profile URLs
@@ -32,7 +32,7 @@ const DIVISION_LINKS = [
     { key: 'marketing-lab', label: 'Marketing Lab' }
 ];
 
-const FALLBACK_IMAGE = './assets/images/film-farm.jpg';
+const FALLBACK_IMAGE = '/assets/images/film-farm.jpg';
 
 // ---------------------------------------------------------------
 // IMAGE ERROR GUARD — any broken image is swapped for a local one
@@ -136,7 +136,7 @@ function buildHeader(activePage) {
     return `
     <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-panel border-b border-charcoalBorder/60" id="mainHeader">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-            <a href="./index.html" class="flex items-center gap-3 group min-w-0" aria-label="KABOVELO 360 home">
+            <a href="/" class="flex items-center gap-3 group min-w-0" aria-label="KABOVELO 360 home">
                 <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-armyGreenBright via-armyGreen to-obsidian p-[1px] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                     <div class="w-full h-full bg-obsidian rounded-[11px] flex items-center justify-center border border-armyGreen/40">
                         <i class="fa-solid fa-compass text-armyGreenLight text-lg group-hover:rotate-180 transition-transform duration-700"></i>
@@ -153,7 +153,7 @@ function buildHeader(activePage) {
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="./enroll.html" class="hidden sm:inline-flex relative px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-armyGreen to-armyGreenBright text-white shadow-lg hover:shadow-armyGreenBright/30 transition-all duration-300 hover:-translate-y-0.5 border border-armyGreenLight/30 whitespace-nowrap ${activePage === 'enroll' ? 'ring-1 ring-armyGreenLight' : ''}">
+                <a href="/enroll/" class="hidden sm:inline-flex relative px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-armyGreen to-armyGreenBright text-white shadow-lg hover:shadow-armyGreenBright/30 transition-all duration-300 hover:-translate-y-0.5 border border-armyGreenLight/30 whitespace-nowrap ${activePage === 'enroll' ? 'ring-1 ring-armyGreenLight' : ''}">
                     <span class="flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-armyGreenLight"></i> Enroll Now</span>
                 </a>
                 <button id="mobileMenuBtn" type="button" class="xl:hidden w-11 h-11 rounded-xl flex items-center justify-center text-greyLight hover:text-white hover:bg-white/5 text-xl" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
@@ -165,10 +165,10 @@ function buildHeader(activePage) {
         <nav id="mobileMenu" class="hidden xl:hidden glass-panel border-t border-charcoalBorder px-4 sm:px-6 pb-6 pt-2 max-h-[calc(100vh-5rem)] overflow-y-auto" aria-label="Mobile navigation">
             ${mobileLinks}
             <div class="mt-5 grid grid-cols-2 gap-3">
-                <a href="./enroll.html" class="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-armyGreen to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider">
+                <a href="/enroll/" class="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-armyGreen to-armyGreenBright text-white font-bold text-xs uppercase tracking-wider">
                     <i class="fa-solid fa-graduation-cap"></i> Enroll Now
                 </a>
-                <a href="./services.html" class="flex items-center justify-center gap-2 py-3.5 rounded-xl glass-card text-white font-bold text-xs uppercase tracking-wider">
+                <a href="/services/" class="flex items-center justify-center gap-2 py-3.5 rounded-xl glass-card text-white font-bold text-xs uppercase tracking-wider">
                     <i class="fa-solid fa-mobile-screen-button"></i> Book &amp; Pay
                 </a>
             </div>
@@ -182,7 +182,7 @@ function buildFooter() {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-charcoalBorder">
                 <div class="space-y-4">
-                    <a href="./index.html" class="flex items-center gap-3">
+                    <a href="/" class="flex items-center gap-3">
                         <span class="w-9 h-9 rounded-lg bg-armyGreen/30 border border-armyGreenBright/40 flex items-center justify-center text-armyGreenLight font-bold text-xs">360</span>
                         <span class="font-serif text-lg font-bold text-white">KABOVELO 360</span>
                     </a>
@@ -200,7 +200,7 @@ function buildFooter() {
                 <div>
                     <h5 class="text-xs font-bold uppercase tracking-widest text-armyGreenLight mb-4">Divisions</h5>
                     <ul class="space-y-2.5 text-sm text-greyMuted">
-                        ${DIVISION_LINKS.map(d => `<li><a href="./divisions.html#${d.key}" class="hover:text-white transition-colors">${d.label}</a></li>`).join('')}
+                        ${DIVISION_LINKS.map(d => `<li><a href="/divisions/#${d.key}" class="hover:text-white transition-colors">${d.label}</a></li>`).join('')}
                     </ul>
                 </div>
 
@@ -219,16 +219,16 @@ function buildFooter() {
                         <li class="flex gap-3"><i class="fa-solid fa-phone text-armyGreenLight mt-1"></i><a href="tel:+260979813471" class="hover:text-white">+260 979 813 471</a></li>
                         <li class="flex gap-3"><i class="fa-brands fa-whatsapp text-armyGreenLight mt-1"></i><a href="https://wa.me/260979813471" target="_blank" rel="noopener" class="hover:text-white">WhatsApp us</a></li>
                     </ul>
-                    <a href="./contact.html" class="inline-flex items-center gap-2 mt-5 text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white">Contact page <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="/contact/" class="inline-flex items-center gap-2 mt-5 text-xs font-bold uppercase tracking-widest text-armyGreenLight hover:text-white">Contact page <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
 
             <div class="pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-greyMuted gap-4 text-center">
                 <p>&copy; ${new Date().getFullYear()} KABOVELO 360 Ecosystem. All rights reserved.</p>
                 <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
-                    <a href="./legal.html#privacy" class="hover:text-greyLight">Privacy Policy</a>
-                    <a href="./legal.html#terms" class="hover:text-greyLight">Terms of Ecosystem</a>
-                    <a href="./legal.html#grants" class="hover:text-greyLight">Grant Transparency</a>
+                    <a href="/legal/#privacy" class="hover:text-greyLight">Privacy Policy</a>
+                    <a href="/legal/#terms" class="hover:text-greyLight">Terms of Ecosystem</a>
+                    <a href="/legal/#grants" class="hover:text-greyLight">Grant Transparency</a>
                 </div>
             </div>
         </div>
@@ -287,7 +287,8 @@ function setupPageTransitions() {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         if (link.target === '_blank' || link.hasAttribute('download')) return;
         const url = new URL(link.href, location.href);
-        if (url.origin !== location.origin || !/\.html$/.test(url.pathname)) return;
+        // only our own pages (/, /about/, …) — not files like images or PDFs
+        if (url.origin !== location.origin || /\.[a-z0-9]+$/i.test(url.pathname.replace(/\.html$/, ''))) return;
         // Same page, only the hash changes → let the page handle it
         if (url.pathname === location.pathname) return;
         e.preventDefault();
