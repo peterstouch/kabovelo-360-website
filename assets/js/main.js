@@ -789,6 +789,12 @@ function checkoutSynergyPackage() {
 
 // Sends a contact / proposal message through the API
 async function sendInquiry(payload) {
+    if (!PAYMENTS_LIVE) {
+        // Email service not connected yet: open the visitor's email app with the message ready to send
+        const body = `${payload.message}\n\n${payload.name}${payload.phone ? '\n' + payload.phone : ''}\n${payload.email}`;
+        location.href = `mailto:${SITE.email}?subject=${encodeURIComponent((payload.subject || 'Website inquiry') + (payload.division ? ' – ' + payload.division : ''))}&body=${encodeURIComponent(body)}`;
+        return { ok: true };
+    }
     let res;
     try {
         res = await fetch(`${SITE.apiBase}/api/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });

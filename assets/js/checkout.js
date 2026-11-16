@@ -250,11 +250,30 @@ async function poll(immediate = false) {
     if (immediate) run(); else pay.timer = setTimeout(run, POLL_INTERVAL);
 }
 
+function renderComingSoon(payload) {
+    const lines = payload.items.map(i => { const s = findService(i.serviceId); return `${s.title} – ${s.packages[i.tier].name} (${formatPrice(s.packages[i.tier], { short: true })})`; });
+    const msg = `Hello KABOVELO 360, I'd like to ${payload.type === 'enrollment' ? 'enroll in' : 'book'}:\n${lines.join('\n')}\n\nName: ${payload.customer.name}\nPhone: ${payload.customer.phone}\nEmail: ${payload.customer.email}${payload.details.intake ? `\nIntake: ${payload.details.intake}` : ''}`;
+    document.getElementById('paymentBody').innerHTML = `
+        <div class="p-8 sm:p-10 text-center">
+            <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-armyGreen/30 border border-armyGreenBright/40 flex items-center justify-center text-armyGreenLight text-2xl"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-armyGreenLight">Launching soon</span>
+            <h3 class="font-serif text-2xl font-semibold text-white mt-2">Online payments are almost ready</h3>
+            <p class="text-sm text-greyLight mt-3 leading-relaxed">Reserve your place now — send us your details and our team will confirm and share mobile money payment instructions.</p>
+            <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <a href="${SITE.whatsapp}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener" class="btn-primary py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider"><i class="fa-brands fa-whatsapp mr-1"></i> Reserve on WhatsApp</a>
+                <a href="mailto:${SITE.email}?subject=${encodeURIComponent(payload.type === 'enrollment' ? 'Film Academy enrollment' : 'Service booking')}&body=${encodeURIComponent(msg)}" class="py-3.5 rounded-xl glass-card text-xs font-bold uppercase tracking-wider text-white"><i class="fa-solid fa-envelope mr-1"></i> Reserve by email</a>
+            </div>
+            <button type="button" data-pay-cancel class="mt-4 text-xs text-greyMuted hover:text-white">Close</button>
+        </div>`;
+    document.querySelector('#paymentBody [data-pay-cancel]').addEventListener('click', closePaymentModal);
+}
+
 async function startPayment(payload) {
     pay.payload = payload;
     stopPolling();
     injectPaymentModal();
     openPaymentModal();
+    if (!PAYMENTS_LIVE) { renderComingSoon(payload); return; }
     renderPayment('sending');
     const minDelay = new Promise(r => setTimeout(r, 900)); // let the "sending" state register
     try {

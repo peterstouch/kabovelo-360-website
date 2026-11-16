@@ -18,6 +18,8 @@ const SITE = {
     // Must match ONLINE_LIMIT in api/wrangler.toml.
     onlineLimit: 150000
 };
+// True once the payment API address above has been filled in
+const PAYMENTS_LIVE = !SITE.apiBase.includes('YOUR-SUBDOMAIN');
 
 // FILM ACADEMY INTAKES — shown on the enrollment page
 const ACADEMY_INTAKES = [
