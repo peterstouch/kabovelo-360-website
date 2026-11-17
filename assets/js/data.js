@@ -22,6 +22,26 @@ const SITE = {
 const PAYMENTS_LIVE = !SITE.apiBase.includes('YOUR-SUBDOMAIN');
 
 // FILM ACADEMY INTAKES — shown on the enrollment page
+// DIVISION VIDEOS — shown above the services for each division (files in assets/videos)
+// shape: 'square' | 'vertical' | 'wide'. Videos autoplay muted; visitors can turn the sound on.
+const DIVISION_VIDEOS = {
+    'marketing-lab': {
+        heading: 'Inside the Marketing Lab',
+        intro: 'Real sessions with our strategy and content team — where campaigns start.',
+        videos: [
+            { src: '/assets/videos/marketing-lab-brainstorming-session.mp4', poster: '/assets/videos/marketing-lab-brainstorming-session.jpg', shape: 'square', title: 'Brainstorming Session 2026', caption: 'Ideas on the table with the Marketing Lab team.' },
+            { src: '/assets/videos/marketing-lab-strategy-session.mp4', poster: '/assets/videos/marketing-lab-strategy-session.jpg', shape: 'square', title: 'Strategy Session', caption: 'Strategy hits different when your mind is clear.' }
+        ]
+    },
+    'film-academy': {
+        heading: 'Inside the Film Academy',
+        intro: 'Learning by doing — conversations, critique and creative direction with working filmmakers.',
+        videos: [
+            { src: '/assets/videos/film-academy-masterclass.mp4', poster: '/assets/videos/film-academy-masterclass.jpg', shape: 'vertical', title: 'Film Academy Masterclass', caption: 'A Film Academy session in progress.' }
+        ]
+    }
+};
+
 const ACADEMY_INTAKES = [
     { id: '2027-01', label: 'January 2027 Intake', starts: '11 Jan 2027' },
     { id: '2027-03', label: 'March 2027 Intake', starts: '08 Mar 2027' },

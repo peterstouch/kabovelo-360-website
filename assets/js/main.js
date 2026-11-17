@@ -368,6 +368,121 @@ document.addEventListener('keydown', (e) => {
 // =================================================================
 // DIVISION PANEL (Home + Divisions page)
 // =================================================================
+// =================================================================
+// DIVISION VIDEOS — autoplay (muted) while on screen, sound toggle, pause
+// =================================================================
+function videoCardHTML(v, extraClass = '') {
+    const ratio = v.shape === 'vertical' ? 'aspect-[9/16]' : v.shape === 'wide' ? 'aspect-video' : 'aspect-square';
+    return `
+        <figure class="video-card group ${extraClass}">
+            <div class="relative ${ratio} rounded-2xl overflow-hidden border border-white/10 bg-black">
+                <video class="absolute inset-0 w-full h-full object-cover" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
+                <div class="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-transparent to-obsidian/20 pointer-events-none"></div>
+                <span class="video-live absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white bg-obsidian/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10"><span class="w-1.5 h-1.5 rounded-full bg-armyGreenLight"></span> Playing</span>
+                <div class="absolute top-3 right-3 flex gap-2">
+                    <button type="button" class="video-btn" data-video-play aria-label="Pause video"><i class="fa-solid fa-pause"></i></button>
+                    <button type="button" class="video-btn" data-video-sound aria-label="Turn sound on"><i class="fa-solid fa-volume-xmark"></i></button>
+                </div>
+                <figcaption class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                    <span class="block font-serif text-base sm:text-lg font-semibold text-white">${v.title}</span>
+                    <span class="block text-[11px] sm:text-xs text-greyLight/90 mt-0.5">${v.caption}</span>
+                </figcaption>
+                <div class="video-progress absolute bottom-0 left-0 h-0.5 bg-armyGreenLight"></div>
+            </div>
+        </figure>`;
+}
+
+function videoShowcaseHTML(divisionKey) {
+    const set = DIVISION_VIDEOS[divisionKey];
+    if (!set || !set.videos.length) return '';
+    const vertical = set.videos.length === 1 && set.videos[0].shape === 'vertical';
+    const div = ECOSYSTEM_DIVISIONS[divisionKey];
+    const cta = divisionKey === 'film-academy'
+        ? `<a href="/enroll/" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll online</a>`
+        : `<a href="/services/?division=${encodeURIComponent(div.name)}" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; pay</a>`;
+    if (vertical) {
+        return `
+        <section class="video-showcase mb-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center" aria-label="${set.heading}">
+            <div class="md:col-span-5 lg:col-span-4 w-full max-w-[22rem] mx-auto md:max-w-none">${videoCardHTML(set.videos[0])}</div>
+            <div class="md:col-span-7 lg:col-span-8">
+                <span class="eyebrow">Watch</span>
+                <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-white mt-3">${set.heading}</h4>
+                <p class="text-sm sm:text-base text-greyMuted leading-relaxed mt-3 max-w-xl">${set.intro}</p>
+                <div class="mt-6">${cta}</div>
+            </div>
+        </section>`;
+    }
+    return `
+        <section class="video-showcase mb-10" aria-label="${set.heading}">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+                <div>
+                    <span class="eyebrow">Watch</span>
+                    <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-white mt-3">${set.heading}</h4>
+                    <p class="text-sm text-greyMuted leading-relaxed mt-2 max-w-xl">${set.intro}</p>
+                </div>
+                <div class="flex-shrink-0">${cta}</div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">${set.videos.map(v => videoCardHTML(v)).join('')}</div>
+        </section>`;
+}
+
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const videoObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        const v = e.target;
+        if (e.isIntersecting && e.intersectionRatio >= 0.35) {
+            if (!v.dataset.userPaused && !reduceMotion) playVideo(v);
+        } else if (!v.paused) {
+            v.pause();
+        }
+    });
+}, { threshold: [0, 0.35, 0.6] }) : null;
+
+function playVideo(v) {
+    if (v.preload === 'none') v.preload = 'auto';
+    const p = v.play();
+    if (p && p.catch) p.catch(() => { /* autoplay blocked — the play button still works */ });
+}
+
+function syncVideoUI(card) {
+    const v = card.querySelector('video');
+    const play = card.querySelector('[data-video-play]');
+    const sound = card.querySelector('[data-video-sound]');
+    play.innerHTML = `<i class="fa-solid ${v.paused ? 'fa-play' : 'fa-pause'}"></i>`;
+    play.setAttribute('aria-label', v.paused ? 'Play video' : 'Pause video');
+    sound.innerHTML = `<i class="fa-solid ${v.muted ? 'fa-volume-xmark' : 'fa-volume-high'}"></i>`;
+    sound.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Mute');
+    card.classList.toggle('is-playing', !v.paused);
+}
+
+function initVideos(root = document) {
+    root.querySelectorAll('.video-card:not([data-ready])').forEach(card => {
+        card.dataset.ready = '1';
+        const v = card.querySelector('video');
+        const bar = card.querySelector('.video-progress');
+        ['play', 'pause', 'volumechange'].forEach(ev => v.addEventListener(ev, () => syncVideoUI(card)));
+        v.addEventListener('timeupdate', () => { if (v.duration) bar.style.width = `${(v.currentTime / v.duration) * 100}%`; });
+        card.querySelector('[data-video-play]').addEventListener('click', () => {
+            if (v.paused) { delete v.dataset.userPaused; playVideo(v); } else { v.dataset.userPaused = '1'; v.pause(); }
+        });
+        card.querySelector('[data-video-sound]').addEventListener('click', () => {
+            const turnOn = v.muted;
+            // only one video talks at a time
+            document.querySelectorAll('.video-card video').forEach(o => { if (o !== v) o.muted = true; });
+            v.muted = !turnOn;
+            if (turnOn) { delete v.dataset.userPaused; playVideo(v); }
+        });
+        // tapping the video itself toggles sound (common on phones)
+        v.addEventListener('click', () => card.querySelector('[data-video-sound]').click());
+        syncVideoUI(card);
+        if (videoObserver) videoObserver.observe(v); else if (!reduceMotion) playVideo(v);
+    });
+}
+
+function releaseVideos(root) {
+    root.querySelectorAll('video').forEach(v => { v.pause(); if (videoObserver) videoObserver.unobserve(v); });
+}
+
 function switchDivision(divisionKey, opts = {}) {
     const divData = ECOSYSTEM_DIVISIONS[divisionKey];
     const container = document.getElementById('divisionDisplayArea');
@@ -379,6 +494,7 @@ function switchDivision(divisionKey, opts = {}) {
 
     container.style.opacity = '0';
     setTimeout(() => {
+        releaseVideos(container);
         const work = WORK_PROJECTS.filter(p => p.division === divisionKey);
         container.innerHTML = `
             <div class="relative rounded-2xl overflow-hidden mb-8 h-72 sm:h-80 border border-charcoalBorder group">
@@ -394,6 +510,8 @@ function switchDivision(divisionKey, opts = {}) {
                     <span class="text-[10px] sm:text-xs font-bold text-armyGreenLight bg-obsidian/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-armyGreenBright/30 self-start sm:self-auto">${divData.stats}</span>
                 </div>
             </div>
+
+            ${videoShowcaseHTML(divisionKey)}
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div class="lg:col-span-7 space-y-6">
@@ -461,6 +579,7 @@ function switchDivision(divisionKey, opts = {}) {
         });
         container.style.opacity = '1';
         setupReveal(container);
+        initVideos(container);
     }, 180);
 }
 
@@ -577,6 +696,14 @@ function filterServices() {
     if (divFilter !== 'all') filtered = filtered.filter(s => s.division === divFilter);
     if (searchVal) {
         filtered = filtered.filter(s => [s.title, s.shortDesc, s.fullDesc, s.division].some(t => t.toLowerCase().includes(searchVal)));
+    }
+    const videoSlot = document.getElementById('serviceVideos');
+    if (videoSlot && videoSlot.dataset.division !== divFilter) {
+        videoSlot.dataset.division = divFilter;
+        releaseVideos(videoSlot);
+        const key = Object.keys(ECOSYSTEM_DIVISIONS).find(k => ECOSYSTEM_DIVISIONS[k].name === divFilter);
+        videoSlot.innerHTML = key ? videoShowcaseHTML(key) : '';
+        initVideos(videoSlot);
     }
     const grid = document.getElementById('servicesGrid');
     document.getElementById('serviceCount').innerText = `${filtered.length} service${filtered.length === 1 ? '' : 's'}`;

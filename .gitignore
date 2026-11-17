@@ -6,3 +6,5 @@ assets/images/director:sessions/
 api/node_modules/
 api/.wrangler/
 api/.dev.vars
+# Original full-size videos — the site uses compressed copies in assets/videos/
+assets/images/videos/

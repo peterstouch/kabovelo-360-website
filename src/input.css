@@ -285,3 +285,19 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
     .no-print { display: none !important; }
     body::after { display: none; }
 }
+
+/* ================================================================
+   DIVISION VIDEOS
+   ================================================================ */
+.video-card video { cursor: pointer; transition: transform 1.2s cubic-bezier(.2, .7, .2, 1); }
+.video-card:hover video { transform: scale(1.02); }
+.video-btn {
+    width: 2.25rem; height: 2.25rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #fff; background: rgba(10, 12, 11, .55); border: 1px solid rgba(255, 255, 255, .15);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .25s ease, transform .25s ease;
+}
+.video-btn:hover { background: #6E915B; transform: scale(1.06); }
+.video-live { opacity: 0; transform: translateY(-4px); transition: opacity .35s ease, transform .35s ease; }
+.video-card.is-playing .video-live { opacity: 1; transform: none; }
+.video-live > span { animation: dot 1.6s ease-in-out infinite; }
+.video-progress { width: 0; transition: width .25s linear; }
