@@ -373,17 +373,37 @@ document.addEventListener('keydown', (e) => {
 // =================================================================
 const VIDEO_RATIO = { vertical: '9 / 16', square: '1 / 1', wide: '16 / 9', ultrawide: '8 / 3' };
 
-const VIDEO_PREVIEW_COUNT = 4; // videos shown before "View all"
+// Each video keeps its own shape. Videos are grouped into rows of equal height:
+// landscape/square videos two per row, vertical videos up to three per row.
+const VIDEO_AR = { vertical: 9 / 16, square: 1, wide: 16 / 9, ultrawide: 8 / 3 };
+const VIDEO_PREVIEW_ROWS = 2; // rows shown before "View all"
 
-function videoCardHTML(v, extra = false) {
+function videoRows(vids) {
+    const rows = [];
+    const used = new Set();
+    vids.forEach((v, i) => {
+        if (used.has(i)) return;
+        const portrait = v.shape === 'vertical';
+        const max = portrait ? 3 : 2;
+        const row = [v];
+        used.add(i);
+        for (let j = i + 1; j < vids.length && row.length < max; j++) {
+            if (!used.has(j) && (vids[j].shape === 'vertical') === portrait) { row.push(vids[j]); used.add(j); }
+        }
+        rows.push(row);
+    });
+    return rows;
+}
+
+function videoCardHTML(v) {
+    const ar = VIDEO_AR[v.shape] || 16 / 9;
     return `
-        <figure class="video-card group ${extra ? 'is-extra hidden' : ''}" data-shape="${v.shape}">
-            <div class="video-frame relative rounded-2xl overflow-hidden border border-white/10 bg-black">
-                <img src="${v.poster}" alt="" aria-hidden="true" class="video-backdrop absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-50">
-                <video class="absolute inset-0 w-full h-full object-contain" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
+        <figure class="video-card group" data-shape="${v.shape}" style="--ar:${ar.toFixed(4)}">
+            <div class="video-frame relative rounded-2xl overflow-hidden border border-white/10 bg-black" style="aspect-ratio:${ar.toFixed(4)}">
+                <video class="absolute inset-0 w-full h-full object-cover" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
                 <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/5 to-obsidian/30 pointer-events-none"></div>
                 <span class="video-live absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white bg-obsidian/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10"><span class="w-1.5 h-1.5 rounded-full bg-armyGreenLight"></span> Playing</span>
-                <div class="absolute top-3 right-3 flex gap-2">
+                <div class="video-controls absolute top-3 right-3 flex gap-2">
                     <button type="button" class="video-btn" data-video-play aria-label="Pause video"><i class="fa-solid fa-pause"></i></button>
                     <button type="button" class="video-btn" data-video-sound aria-label="Turn sound on"><i class="fa-solid fa-volume-xmark"></i></button>
                     <button type="button" class="video-btn" data-video-expand aria-label="Watch full screen with sound"><i class="fa-solid fa-expand"></i></button>
@@ -406,7 +426,8 @@ function videoShowcaseHTML(divisionKey) {
     if (!set || !set.videos.length) return '';
     const div = ECOSYSTEM_DIVISIONS[divisionKey];
     const vids = set.videos;
-    const more = vids.length - VIDEO_PREVIEW_COUNT;
+    const rows = videoRows(vids);
+    const more = rows.slice(VIDEO_PREVIEW_ROWS).reduce((n, r) => n + r.length, 0);
     const cta = divisionKey === 'film-academy'
         ? `<a href="/enroll/" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll online</a>`
         : `<a href="/services/?division=${encodeURIComponent(div.name)}" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; pay</a>`;
@@ -420,8 +441,11 @@ function videoShowcaseHTML(divisionKey) {
                 </div>
                 <div class="flex-shrink-0">${cta}</div>
             </div>
-            <div class="video-grid grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                ${vids.map((v, i) => videoCardHTML(v, i >= VIDEO_PREVIEW_COUNT)).join('')}
+            <div class="video-rows">
+                ${rows.map((row, i) => `
+                <div class="video-row ${i >= VIDEO_PREVIEW_ROWS ? 'is-extra hidden' : ''}" style="--sum:${row.reduce((n, v) => n + (VIDEO_AR[v.shape] || 16 / 9), 0).toFixed(4)};--count:${row.length}">
+                    ${row.map(v => videoCardHTML(v)).join('')}
+                </div>`).join('')}
             </div>
             ${more > 0 ? `
             <div class="mt-6 sm:mt-8 flex justify-center">
@@ -520,16 +544,15 @@ function setupViewAll(section) {
     btn.dataset.ready = '1';
     btn.addEventListener('click', () => {
         const open = btn.getAttribute('aria-expanded') !== 'true';
-        const extras = section.querySelectorAll('.video-card.is-extra');
-        extras.forEach((card, i) => {
-            card.classList.toggle('hidden', !open);
+        const extras = section.querySelectorAll('.video-row.is-extra');
+        extras.forEach((row, i) => {
+            row.classList.toggle('hidden', !open);
             if (open) {
-                card.style.animationDelay = `${(i % 2) * 90 + Math.floor(i / 2) * 120}ms`;
-                card.classList.add('video-reveal');
+                row.style.animationDelay = `${i * 120}ms`;
+                row.classList.add('video-reveal');
             } else {
-                card.classList.remove('video-reveal');
-                const v = card.querySelector('video');
-                v.pause();
+                row.classList.remove('video-reveal');
+                row.querySelectorAll('video').forEach(v => v.pause());
             }
         });
         btn.setAttribute('aria-expanded', String(open));
