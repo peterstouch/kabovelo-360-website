@@ -373,13 +373,15 @@ document.addEventListener('keydown', (e) => {
 // =================================================================
 const VIDEO_RATIO = { vertical: '9 / 16', square: '1 / 1', wide: '16 / 9', ultrawide: '8 / 3' };
 
-function videoCardHTML(v, inRail = false) {
+const VIDEO_PREVIEW_COUNT = 4; // videos shown before "View all"
+
+function videoCardHTML(v, extra = false) {
     return `
-        <figure class="video-card group ${inRail ? 'in-rail' : ''}" data-shape="${v.shape}">
-            <div class="video-frame relative rounded-2xl overflow-hidden border border-white/10 bg-black" style="aspect-ratio:${VIDEO_RATIO[v.shape] || '16 / 9'}">
-                ${v.shape === 'ultrawide' ? `<img src="${v.poster}" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-60">` : ''}
-                <video class="absolute inset-0 w-full h-full ${v.shape === 'ultrawide' ? 'object-contain' : 'object-cover'}" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
-                <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/10 to-obsidian/30 pointer-events-none"></div>
+        <figure class="video-card group ${extra ? 'is-extra hidden' : ''}" data-shape="${v.shape}">
+            <div class="video-frame relative rounded-2xl overflow-hidden border border-white/10 bg-black">
+                <img src="${v.poster}" alt="" aria-hidden="true" class="video-backdrop absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-50">
+                <video class="absolute inset-0 w-full h-full object-contain" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
+                <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/5 to-obsidian/30 pointer-events-none"></div>
                 <span class="video-live absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white bg-obsidian/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10"><span class="w-1.5 h-1.5 rounded-full bg-armyGreenLight"></span> Playing</span>
                 <div class="absolute top-3 right-3 flex gap-2">
                     <button type="button" class="video-btn" data-video-play aria-label="Pause video"><i class="fa-solid fa-pause"></i></button>
@@ -404,54 +406,31 @@ function videoShowcaseHTML(divisionKey) {
     if (!set || !set.videos.length) return '';
     const div = ECOSYSTEM_DIVISIONS[divisionKey];
     const vids = set.videos;
+    const more = vids.length - VIDEO_PREVIEW_COUNT;
     const cta = divisionKey === 'film-academy'
         ? `<a href="/enroll/" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll online</a>`
         : `<a href="/services/?division=${encodeURIComponent(div.name)}" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; pay</a>`;
-    const header = (withArrows) => `
+    return `
+        <section class="video-showcase mb-10" aria-label="${set.heading}">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5 sm:mb-6">
                 <div>
                     <span class="eyebrow">Watch · ${vids.length} ${vids.length === 1 ? 'video' : 'videos'}</span>
                     <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-white mt-3">${set.heading}</h4>
                     <p class="text-sm text-greyMuted leading-relaxed mt-2 max-w-xl">${set.intro}</p>
                 </div>
-                <div class="flex items-center gap-3 flex-shrink-0">
-                    ${withArrows ? `
-                    <button type="button" class="rail-arrow" data-rail-prev aria-label="Previous videos"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button type="button" class="rail-arrow" data-rail-next aria-label="More videos"><i class="fa-solid fa-arrow-right"></i></button>` : ''}
-                    ${cta}
-                </div>
-            </div>`;
-
-    // One or two vertical videos: feature them next to the text
-    if (vids.length <= 2 && vids.every(v => v.shape === 'vertical')) {
-        const two = vids.length === 2;
-        return `
-        <section class="video-showcase mb-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center" aria-label="${set.heading}">
-            <div class="${two ? 'md:col-span-7 grid grid-cols-2 gap-3 sm:gap-4' : 'md:col-span-5 lg:col-span-4 w-full max-w-[22rem] mx-auto md:max-w-none'}">${vids.map(v => videoCardHTML(v)).join('')}</div>
-            <div class="${two ? 'md:col-span-5' : 'md:col-span-7 lg:col-span-8'}">
-                <span class="eyebrow">Watch</span>
-                <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-white mt-3">${set.heading}</h4>
-                <p class="text-sm sm:text-base text-greyMuted leading-relaxed mt-3 max-w-xl">${set.intro}</p>
-                <div class="mt-6">${cta}</div>
+                <div class="flex-shrink-0">${cta}</div>
             </div>
-        </section>`;
-    }
-    // Two of the same shape: side by side
-    if (vids.length === 2 && vids[0].shape === vids[1].shape && vids[0].shape !== 'vertical') {
-        return `
-        <section class="video-showcase mb-10" aria-label="${set.heading}">
-            ${header(false)}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">${vids.map(v => videoCardHTML(v)).join('')}</div>
-        </section>`;
-    }
-    // Otherwise: a swipeable film-strip rail
-    return `
-        <section class="video-showcase mb-10" aria-label="${set.heading}">
-            ${header(true)}
-            <div class="video-rail no-scrollbar" tabindex="0" aria-label="${set.heading} videos — scroll sideways">
-                ${vids.map(v => videoCardHTML(v, true)).join('')}
+            <div class="video-grid grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                ${vids.map((v, i) => videoCardHTML(v, i >= VIDEO_PREVIEW_COUNT)).join('')}
             </div>
-            <div class="rail-dots" aria-hidden="true">${vids.map(() => '<span></span>').join('')}</div>
+            ${more > 0 ? `
+            <div class="mt-6 sm:mt-8 flex justify-center">
+                <button type="button" class="view-all-btn" data-view-all aria-expanded="false" data-more="${more}" data-total="${vids.length}">
+                    <span data-label>View all ${vids.length} videos</span>
+                    <span class="view-all-count">+${more}</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                </button>
+            </div>` : ''}
         </section>`;
 }
 
@@ -460,8 +439,7 @@ let videoLightboxOpen = false;
 const videoObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
     entries.forEach(e => {
         const v = e.target;
-        const need = v.closest('.in-rail') ? 0.6 : 0.35; // in a rail only the clearly visible cards play
-        if (e.isIntersecting && e.intersectionRatio >= need) {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
             if (!v.dataset.userPaused && !reduceMotion && !videoLightboxOpen) playVideo(v);
         } else if (!v.paused) {
             v.pause();
@@ -536,39 +514,33 @@ function openVideoLightbox(card) {
     if (p && p.catch) p.catch(() => {});
 }
 
-function setupRail(section) {
-    const rail = section.querySelector('.video-rail');
-    if (!rail || rail.dataset.ready) return;
-    rail.dataset.ready = '1';
-    const prev = section.querySelector('[data-rail-prev]');
-    const next = section.querySelector('[data-rail-next]');
-    const dots = [...section.querySelectorAll('.rail-dots span')];
-    const cards = [...rail.querySelectorAll('.video-card')];
-    const step = () => Math.max(rail.clientWidth * 0.8, 240);
-    const update = () => {
-        const max = rail.scrollWidth - rail.clientWidth - 2;
-        const overflow = max > 4;
-        rail.classList.toggle('fits', !overflow); // everything visible: centre the cards
-        [prev, next].forEach(b => b && b.classList.toggle('hidden', !overflow));
-        if (prev) prev.disabled = rail.scrollLeft <= 2;
-        if (next) next.disabled = rail.scrollLeft >= max;
-        section.querySelector('.rail-dots').classList.toggle('hidden', !overflow);
-        const mid = rail.scrollLeft + rail.clientWidth / 2;
-        let active = 0;
-        cards.forEach((c, i) => { if (c.offsetLeft <= mid) active = i; });
-        dots.forEach((d, i) => d.classList.toggle('is-on', i === active));
-    };
-    prev && prev.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
-    next && next.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
-    rail.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
-    rail.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); rail.scrollBy({ left: step(), behavior: 'smooth' }); }
-        if (e.key === 'ArrowLeft') { e.preventDefault(); rail.scrollBy({ left: -step(), behavior: 'smooth' }); }
+function setupViewAll(section) {
+    const btn = section.querySelector('[data-view-all]');
+    if (!btn || btn.dataset.ready) return;
+    btn.dataset.ready = '1';
+    btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') !== 'true';
+        const extras = section.querySelectorAll('.video-card.is-extra');
+        extras.forEach((card, i) => {
+            card.classList.toggle('hidden', !open);
+            if (open) {
+                card.style.animationDelay = `${(i % 2) * 90 + Math.floor(i / 2) * 120}ms`;
+                card.classList.add('video-reveal');
+            } else {
+                card.classList.remove('video-reveal');
+                const v = card.querySelector('video');
+                v.pause();
+            }
+        });
+        btn.setAttribute('aria-expanded', String(open));
+        btn.querySelector('[data-label]').textContent = open ? 'Show fewer videos' : `View all ${btn.dataset.total} videos`;
+        btn.querySelector('.view-all-count').classList.toggle('hidden', open);
+        btn.querySelector('i').classList.toggle('rotate-180', open);
+        if (!open) {
+            const top = section.getBoundingClientRect().top;
+            if (top < 0) window.scrollTo({ top: top + scrollY - 100, behavior: 'smooth' });
+        }
     });
-    if ('ResizeObserver' in window) new ResizeObserver(() => requestAnimationFrame(update)).observe(rail);
-    else window.addEventListener('resize', update);
-    update();
-    setTimeout(update, 400);
 }
 
 function initVideos(root = document) {
@@ -594,7 +566,7 @@ function initVideos(root = document) {
         syncVideoUI(card);
         if (videoObserver) videoObserver.observe(v); else if (!reduceMotion) playVideo(v);
     });
-    root.querySelectorAll('.video-showcase').forEach(setupRail);
+    root.querySelectorAll('.video-showcase').forEach(setupViewAll);
 }
 
 function releaseVideos(root) {

@@ -302,33 +302,6 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
 .video-live > span { animation: dot 1.6s ease-in-out infinite; }
 .video-progress { width: 0; transition: width .25s linear; }
 
-/* Video rail — a swipeable film strip; every card shares one height */
-.video-rail {
-    --rail-h: 25rem;
-    display: flex; gap: 1rem; overflow-x: auto; overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory; scroll-padding-inline: 2px; padding: 2px 2px .5rem;
-    -webkit-overflow-scrolling: touch;
-}
-@media (min-width: 640px) { .video-rail { --rail-h: 29rem; gap: 1.25rem; } }
-@media (min-width: 1280px) { .video-rail { --rail-h: 31rem; } }
-.video-rail:focus-visible { outline: 2px solid #8BAE77; outline-offset: 4px; border-radius: 1rem; }
-.video-card.in-rail { flex: 0 0 auto; scroll-snap-align: start; }
-.video-card.in-rail .video-frame { height: var(--rail-h); width: auto; max-width: min(86vw, 52rem); }
-.video-card .video-frame { width: 100%; }
-
-.rail-arrow {
-    width: 2.75rem; height: 2.75rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
-    color: #fff; border: 1px solid rgba(255, 255, 255, .15); background: rgba(255, 255, 255, .04);
-    transition: background .25s ease, border-color .25s ease, opacity .25s ease, transform .25s ease;
-}
-.rail-arrow:hover:not(:disabled) { background: #6E915B; border-color: #6E915B; transform: translateY(-1px); }
-.rail-arrow:disabled { opacity: .3; cursor: default; }
-@media (max-width: 639px) { .rail-arrow { display: none !important; } }
-
-.rail-dots { display: flex; justify-content: center; gap: .4rem; margin-top: 1rem; }
-.rail-dots span { width: .4rem; height: .4rem; border-radius: 999px; background: rgba(255, 255, 255, .2); transition: all .35s cubic-bezier(.2, .7, .2, 1); }
-.rail-dots span.is-on { width: 1.5rem; background: #8BAE77; }
-
 /* Compact controls on narrow video cards (e.g. two vertical videos side by side on a phone) */
 .video-frame { container-type: inline-size; }
 @container (max-width: 260px) {
@@ -340,6 +313,23 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
 @container (max-width: 190px) {
     .video-btn[data-video-play] { display: none; }
 }
-.video-rail.fits { justify-content: center; }
-.video-rail.fits + .rail-dots { display: none; }
-.rail-arrow.hidden { display: none; }
+
+/* Video grid — every card shares one frame; the whole video is shown over its own blurred still */
+.video-frame { aspect-ratio: 4 / 3; }
+.video-card[data-shape="vertical"] .video-backdrop { opacity: .6; }
+.video-reveal { animation: videoIn .7s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes videoIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+.view-all-btn {
+    display: inline-flex; align-items: center; gap: .7rem; padding: .85rem 1.5rem; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #fff;
+    border: 1px solid rgba(139, 174, 119, .45); background: rgba(74, 99, 61, .15);
+    transition: background .3s ease, border-color .3s ease, transform .3s cubic-bezier(.2, .7, .2, 1);
+}
+.view-all-btn:hover { background: rgba(110, 145, 91, .3); border-color: #8BAE77; transform: translateY(-2px); }
+.view-all-btn:active { transform: scale(.98); }
+.view-all-count { font-size: 10px; letter-spacing: .05em; padding: .15rem .45rem; border-radius: 999px; background: #6E915B; }
+/* A lone card on the last row sits centred */
+@media (min-width: 640px) {
+    .video-grid > .video-card:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - .625rem); justify-self: center; }
+}
