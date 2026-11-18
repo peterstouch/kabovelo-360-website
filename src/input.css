@@ -314,20 +314,13 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
     .video-btn[data-video-play] { display: none; }
 }
 
-/* Video rows — every video keeps its own shape; videos in a row share one height */
-.video-rows { display: flex; flex-direction: column; gap: 1rem; }
-.video-row { display: flex; flex-direction: column; gap: 1rem; }
-.video-row > .video-card { width: 100%; max-width: calc(27rem * var(--ar)); margin-inline: 0 auto; } /* left-aligned */
-@media (min-width: 640px) {
-    .video-rows { gap: 1.25rem; }
-    .video-row {
-        --cap: 30rem; /* tallest a row may get */
-        flex-direction: row; gap: 1.25rem; width: 100%; margin-inline: 0 auto; /* rows start at the same left edge */
-        max-width: calc(var(--cap) * var(--sum) + (var(--count) - 1) * 1.25rem);
-    }
-    .video-row > .video-card { flex: var(--ar) 1 0; min-width: 0; max-width: none; margin: 0; }
-}
-@media (min-width: 1280px) { .video-row { --cap: 32rem; } }
+/* Video wall — justified rows that always span the full width */
+.video-wall { display: flex; flex-direction: column; gap: 1rem; }
+.video-line { display: flex; gap: 1rem; width: 100%; }
+.video-line > .video-card { flex: var(--ar) 1 0; min-width: 0; height: 100%; }
+.video-line.hidden { display: none; }
+.video-card[data-shape="vertical"] video { object-position: 50% 30%; } /* keep faces in frame when scaled */
+@media (min-width: 640px) { .video-wall, .video-line { gap: 1.25rem; } }
 .video-reveal { animation: videoIn .7s cubic-bezier(.2, .7, .2, 1) both; }
 @keyframes videoIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
@@ -340,7 +333,6 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
 .view-all-btn:hover { background: rgba(110, 145, 91, .3); border-color: #8BAE77; transform: translateY(-2px); }
 .view-all-btn:active { transform: scale(.98); }
 .view-all-count { font-size: 10px; letter-spacing: .05em; padding: .15rem .45rem; border-radius: 999px; background: #6E915B; }
-.video-row.hidden { display: none; }
 /* On mouse devices the controls appear on hover, keeping brand logos in the corner clear */
 @media (hover: hover) and (pointer: fine) {
     .video-card .video-controls { opacity: 0; transform: translateY(-4px); transition: opacity .3s ease, transform .3s ease; }

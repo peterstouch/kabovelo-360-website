@@ -373,33 +373,17 @@ document.addEventListener('keydown', (e) => {
 // =================================================================
 const VIDEO_RATIO = { vertical: '9 / 16', square: '1 / 1', wide: '16 / 9', ultrawide: '8 / 3' };
 
-// Each video keeps its own shape. Videos are grouped into rows of equal height:
-// landscape/square videos two per row, vertical videos up to three per row.
+// Justified video wall: rows always span the full width. The number of videos per row
+// depends on the screen width so each row lands near a target height; videos keep
+// their natural shape where possible and are scaled to fill (gentle crop) otherwise.
 const VIDEO_AR = { vertical: 9 / 16, square: 1, wide: 16 / 9, ultrawide: 8 / 3 };
 const VIDEO_PREVIEW_ROWS = 2; // rows shown before "View all"
-
-function videoRows(vids) {
-    const rows = [];
-    const used = new Set();
-    vids.forEach((v, i) => {
-        if (used.has(i)) return;
-        const portrait = v.shape === 'vertical';
-        const max = portrait ? 3 : 2;
-        const row = [v];
-        used.add(i);
-        for (let j = i + 1; j < vids.length && row.length < max; j++) {
-            if (!used.has(j) && (vids[j].shape === 'vertical') === portrait) { row.push(vids[j]); used.add(j); }
-        }
-        rows.push(row);
-    });
-    return rows;
-}
 
 function videoCardHTML(v) {
     const ar = VIDEO_AR[v.shape] || 16 / 9;
     return `
-        <figure class="video-card group" data-shape="${v.shape}" style="--ar:${ar.toFixed(4)}">
-            <div class="video-frame relative rounded-2xl overflow-hidden border border-white/10 bg-black" style="aspect-ratio:${ar.toFixed(4)}">
+        <figure class="video-card group" data-shape="${v.shape}" data-ar="${ar.toFixed(4)}" style="--ar:${ar.toFixed(4)}">
+            <div class="video-frame relative h-full rounded-2xl overflow-hidden border border-white/10 bg-black">
                 <video class="absolute inset-0 w-full h-full object-cover" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" aria-label="${v.title}"></video>
                 <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/5 to-obsidian/30 pointer-events-none"></div>
                 <span class="video-live absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white bg-obsidian/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10"><span class="w-1.5 h-1.5 rounded-full bg-armyGreenLight"></span> Playing</span>
@@ -426,8 +410,6 @@ function videoShowcaseHTML(divisionKey) {
     if (!set || !set.videos.length) return '';
     const div = ECOSYSTEM_DIVISIONS[divisionKey];
     const vids = set.videos;
-    const rows = videoRows(vids);
-    const more = rows.slice(VIDEO_PREVIEW_ROWS).reduce((n, r) => n + r.length, 0);
     const cta = divisionKey === 'film-academy'
         ? `<a href="/enroll/" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-graduation-cap mr-1.5"></i> Enroll online</a>`
         : `<a href="/services/?division=${encodeURIComponent(div.name)}" class="btn-primary px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest"><i class="fa-solid fa-mobile-screen-button mr-1.5"></i> Book &amp; pay</a>`;
@@ -441,21 +423,74 @@ function videoShowcaseHTML(divisionKey) {
                 </div>
                 <div class="flex-shrink-0">${cta}</div>
             </div>
-            <div class="video-rows">
-                ${rows.map((row, i) => `
-                <div class="video-row ${i >= VIDEO_PREVIEW_ROWS ? 'is-extra hidden' : ''}" style="--sum:${row.reduce((n, v) => n + (VIDEO_AR[v.shape] || 16 / 9), 0).toFixed(4)};--count:${row.length}">
-                    ${row.map(v => videoCardHTML(v)).join('')}
-                </div>`).join('')}
-            </div>
-            ${more > 0 ? `
-            <div class="mt-6 sm:mt-8 flex justify-center">
-                <button type="button" class="view-all-btn" data-view-all aria-expanded="false" data-more="${more}" data-total="${vids.length}">
+            <div class="video-wall">${vids.map(v => videoCardHTML(v)).join('')}</div>
+            <div class="mt-6 sm:mt-8 flex justify-center hidden" data-view-all-wrap>
+                <button type="button" class="view-all-btn" data-view-all aria-expanded="false" data-total="${vids.length}">
                     <span data-label>View all ${vids.length} videos</span>
-                    <span class="view-all-count">+${more}</span>
+                    <span class="view-all-count"></span>
                     <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
                 </button>
-            </div>` : ''}
+            </div>
         </section>`;
+}
+
+/** Splits cards into full-width rows for the current width. Returns [{cards, height}]. */
+function justifyVideos(cards, width, gap) {
+    if (width < 480) {
+        // phones: one full-width video per row, shapes gently normalised
+        return cards.map(c => ({ cards: [c], height: width / Math.min(2, Math.max(0.8, +c.dataset.ar)) }));
+    }
+    const target = width >= 1024 ? 420 : 300;
+    const maxFor = (row) => target * (row.every(c => c.dataset.shape === 'vertical') ? 1.45 : 1.55); // vertical-only rows may be taller
+    const heightFor = (row) => (width - gap * (row.length - 1)) / row.reduce((n, c) => n + +c.dataset.ar, 0);
+    const rows = [];
+    let row = [];
+    cards.forEach(c => {
+        const withIt = [...row, c];
+        if (!row.length) { row = withIt; return; }
+        const hNow = heightFor(row), hWith = heightFor(withIt);
+        // close the row when adding this card would move it further from the target height
+        if (hNow <= target * 1.15 && Math.abs(hNow - target) <= Math.abs(hWith - target)) { rows.push(row); row = [c]; }
+        else row = withIt;
+    });
+    if (row.length) rows.push(row);
+    // a small leftover row would get huge — fold it into the row above instead
+    if (rows.length > 1 && heightFor(rows[rows.length - 1]) > maxFor(rows[rows.length - 1])) {
+        const last = rows.pop();
+        rows[rows.length - 1].push(...last);
+    }
+    return rows.map(r => ({ cards: r, height: Math.min(maxFor(r), heightFor(r)) }));
+}
+
+function layoutVideoWall(section, force = false) {
+    const wall = section.querySelector('.video-wall');
+    if (!wall) return;
+    const width = Math.round(wall.clientWidth);
+    if (!width || (!force && +wall.dataset.width === width)) return;
+    wall.dataset.width = width;
+    const gap = width >= 640 ? 20 : 16;
+    const cards = [...wall.querySelectorAll('.video-card')]; // keeps the original order
+    const rows = justifyVideos(cards, width, gap);
+    const expanded = section.dataset.expanded === 'true';
+    const frag = document.createDocumentFragment();
+    rows.forEach((r, i) => {
+        const line = document.createElement('div');
+        line.className = 'video-line' + (i >= VIDEO_PREVIEW_ROWS && !expanded ? ' is-extra hidden' : (i >= VIDEO_PREVIEW_ROWS ? ' is-extra' : ''));
+        line.style.height = `${Math.round(r.height)}px`;
+        // widths share the row in proportion to each video's shape (x100: flex-grow below 1 would not fill the row)
+        r.cards.forEach(c => { c.style.flexGrow = String(Math.round(+c.dataset.ar * 1000) / 10); line.appendChild(c); });
+        frag.appendChild(line);
+    });
+    wall.replaceChildren(frag);
+    // re-observe moved videos so on-screen ones keep playing
+    cards.forEach(c => { const v = c.querySelector('video'); if (videoObserver) { videoObserver.unobserve(v); videoObserver.observe(v); } });
+    // "View all" only when there are more rows than the preview
+    const wrap = section.querySelector('[data-view-all-wrap]');
+    const hiddenCount = rows.slice(VIDEO_PREVIEW_ROWS).reduce((n, r) => n + r.cards.length, 0);
+    wrap.classList.toggle('hidden', hiddenCount === 0);
+    const btn = wrap.querySelector('[data-view-all]');
+    btn.querySelector('.view-all-count').textContent = `+${hiddenCount}`;
+    btn.querySelector('.view-all-count').classList.toggle('hidden', expanded);
 }
 
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -538,22 +573,22 @@ function openVideoLightbox(card) {
     if (p && p.catch) p.catch(() => {});
 }
 
-function setupViewAll(section) {
+function setupVideoWall(section) {
+    if (section.dataset.wallReady) return;
+    section.dataset.wallReady = '1';
+    layoutVideoWall(section, true);
+    let t;
+    const relayout = () => { clearTimeout(t); t = setTimeout(() => layoutVideoWall(section), 150); }; // debounced
+    if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(section.querySelector('.video-wall'));
+    else window.addEventListener('resize', relayout);
     const btn = section.querySelector('[data-view-all]');
-    if (!btn || btn.dataset.ready) return;
-    btn.dataset.ready = '1';
     btn.addEventListener('click', () => {
-        const open = btn.getAttribute('aria-expanded') !== 'true';
-        const extras = section.querySelectorAll('.video-row.is-extra');
-        extras.forEach((row, i) => {
-            row.classList.toggle('hidden', !open);
-            if (open) {
-                row.style.animationDelay = `${i * 120}ms`;
-                row.classList.add('video-reveal');
-            } else {
-                row.classList.remove('video-reveal');
-                row.querySelectorAll('video').forEach(v => v.pause());
-            }
+        const open = section.dataset.expanded !== 'true';
+        section.dataset.expanded = String(open);
+        section.querySelectorAll('.video-line.is-extra').forEach((line, i) => {
+            line.classList.toggle('hidden', !open);
+            if (open) { line.style.animationDelay = `${i * 120}ms`; line.classList.add('video-reveal'); }
+            else { line.classList.remove('video-reveal'); line.querySelectorAll('video').forEach(v => v.pause()); }
         });
         btn.setAttribute('aria-expanded', String(open));
         btn.querySelector('[data-label]').textContent = open ? 'Show fewer videos' : `View all ${btn.dataset.total} videos`;
@@ -589,7 +624,7 @@ function initVideos(root = document) {
         syncVideoUI(card);
         if (videoObserver) videoObserver.observe(v); else if (!reduceMotion) playVideo(v);
     });
-    root.querySelectorAll('.video-showcase').forEach(setupViewAll);
+    root.querySelectorAll('.video-showcase').forEach(setupVideoWall);
 }
 
 function releaseVideos(root) {
