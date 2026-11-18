@@ -23,21 +23,48 @@ const PAYMENTS_LIVE = !SITE.apiBase.includes('YOUR-SUBDOMAIN');
 
 // FILM ACADEMY INTAKES — shown on the enrollment page
 // DIVISION VIDEOS — shown above the services for each division (files in assets/videos)
-// shape: 'square' | 'vertical' | 'wide'. Videos autoplay muted; visitors can turn the sound on.
+// shape: 'vertical' (9:16) | 'square' | 'wide' (16:9) | 'ultrawide' (8:3).
+// Videos autoplay muted while on screen; visitors can turn on sound or watch full screen.
 const DIVISION_VIDEOS = {
     'marketing-lab': {
-        heading: 'Inside the Marketing Lab',
-        intro: 'Real sessions with our strategy and content team — where campaigns start.',
+        heading: 'Campaigns we’ve made',
+        intro: 'Adverts, product spots and social content produced for brands — plus a look inside our strategy sessions.',
         videos: [
-            { src: '/assets/videos/marketing-lab-brainstorming-session.mp4', poster: '/assets/videos/marketing-lab-brainstorming-session.jpg', shape: 'square', title: 'Brainstorming Session 2026', caption: 'Ideas on the table with the Marketing Lab team.' },
-            { src: '/assets/videos/marketing-lab-strategy-session.mp4', poster: '/assets/videos/marketing-lab-strategy-session.jpg', shape: 'square', title: 'Strategy Session', caption: 'Strategy hits different when your mind is clear.' }
+            { src: '/assets/videos/marketing-lab-sampay-mastercard-advert.mp4', poster: '/assets/videos/marketing-lab-sampay-mastercard-advert.jpg', shape: 'wide', client: 'Sampay × Mastercard', title: 'Sampay Mastercard Advert', caption: 'Featuring Mutale Mwanza.', duration: '1:03' },
+            { src: '/assets/videos/marketing-lab-glam-and-glory-hair-removal.mp4', poster: '/assets/videos/marketing-lab-glam-and-glory-hair-removal.jpg', shape: 'wide', client: 'Glam & Glory', title: 'Hair Removal Cream Advert', caption: 'Beauty product commercial.', duration: '0:35' },
+            { src: '/assets/videos/marketing-lab-comfort-care-advert.mp4', poster: '/assets/videos/marketing-lab-comfort-care-advert.jpg', shape: 'wide', client: 'Comfort Care', title: 'Comfort Care Advert 2025', caption: 'Family-focused TV & social advert.', duration: '0:48' },
+            { src: '/assets/videos/marketing-lab-gezile-scrub.mp4', poster: '/assets/videos/marketing-lab-gezile-scrub.jpg', shape: 'ultrawide', client: 'Glam & Glory', title: 'Gezile Scrub', caption: 'Ten-second product spot.', duration: '0:10' },
+            { src: '/assets/videos/marketing-lab-gezile-shower-gel.mp4', poster: '/assets/videos/marketing-lab-gezile-shower-gel.jpg', shape: 'ultrawide', client: 'Glam & Glory', title: 'Gezile Shower Gel', caption: 'Ten-second product spot.', duration: '0:10' },
+            { src: '/assets/videos/marketing-lab-dry-fish-day-2026.mp4', poster: '/assets/videos/marketing-lab-dry-fish-day-2026.jpg', shape: 'vertical', client: 'Social Content', title: 'Dry Fish Day 2026', caption: 'Food content made for social media.', duration: '1:32' },
+            { src: '/assets/videos/marketing-lab-dga-film-farm-2025.mp4', poster: '/assets/videos/marketing-lab-dga-film-farm-2025.jpg', shape: 'wide', client: 'DGA × Kabovelo Film Farm', title: 'DGA Event Film 2025', caption: 'Conference coverage and highlights.', duration: '3:25' },
+            { src: '/assets/videos/marketing-lab-brainstorming-session.mp4', poster: '/assets/videos/marketing-lab-brainstorming-session.jpg', shape: 'square', client: 'Inside the Lab', title: 'Brainstorming Session 2026', caption: 'Ideas on the table with the team.', duration: '0:30' },
+            { src: '/assets/videos/marketing-lab-strategy-session.mp4', poster: '/assets/videos/marketing-lab-strategy-session.jpg', shape: 'square', client: 'Inside the Lab', title: 'Strategy Session', caption: 'Strategy hits different when your mind is clear.', duration: '0:30' }
         ]
     },
     'film-academy': {
         heading: 'Inside the Film Academy',
         intro: 'Learning by doing — conversations, critique and creative direction with working filmmakers.',
         videos: [
-            { src: '/assets/videos/film-academy-masterclass.mp4', poster: '/assets/videos/film-academy-masterclass.jpg', shape: 'vertical', title: 'Film Academy Masterclass', caption: 'A Film Academy session in progress.' }
+            { src: '/assets/videos/film-academy-kff-academy-2026.mp4', poster: '/assets/videos/film-academy-kff-academy-2026.jpg', shape: 'vertical', client: 'KFF Academy', title: 'KFF Academy 2026', caption: 'The Creative Powerhouse.', duration: '0:40' },
+            { src: '/assets/videos/film-academy-masterclass.mp4', poster: '/assets/videos/film-academy-masterclass.jpg', shape: 'vertical', client: 'Masterclass', title: 'Film Academy Masterclass', caption: 'A session in progress.', duration: '0:15' }
+        ]
+    },
+    'film-farm': {
+        heading: 'From the Film Farm',
+        intro: 'Title sequences, commercial shoots and studio moments from our production team.',
+        videos: [
+            { src: '/assets/videos/film-farm-jowa-mu-city-muli-pressure-intro.mp4', poster: '/assets/videos/film-farm-jowa-mu-city-muli-pressure-intro.jpg', shape: 'wide', client: 'Opening Titles', title: 'Jowa — Mu City Muli Pressure', caption: 'A Kabovelo Media House film.', duration: '0:41' },
+            { src: '/assets/videos/film-farm-mandate-ad-shoot-day-1.mp4', poster: '/assets/videos/film-farm-mandate-ad-shoot-day-1.jpg', shape: 'vertical', client: 'Behind the Scenes', title: 'Mandate Ad Shoot — Day 1', caption: 'On set for a commercial shoot.', duration: '0:50' },
+            { src: '/assets/videos/film-farm-deacon.mp4', poster: '/assets/videos/film-farm-deacon.jpg', shape: 'vertical', client: 'Kabovelo Film Farm', title: 'Deacon', caption: 'A fertile ground for cinematic excellence.', duration: '0:12' }
+        ]
+    },
+    'fashion-avenue': {
+        heading: 'Fashion Avenue in Motion',
+        intro: 'Styling, wardrobe and portrait shoots — fashion that tells a story on camera.',
+        videos: [
+            { src: '/assets/videos/fashion-avenue-shanice-look-1.mp4', poster: '/assets/videos/fashion-avenue-shanice-look-1.jpg', shape: 'vertical', client: 'Portrait Shoot', title: 'Shanice — The Red Dress', caption: 'Birthday portrait session.', duration: '0:54' },
+            { src: '/assets/videos/fashion-avenue-shanice-look-2.mp4', poster: '/assets/videos/fashion-avenue-shanice-look-2.jpg', shape: 'vertical', client: 'Story Edit', title: 'Shanice — Life in Pictures', caption: 'A personal story in photos.', duration: '1:09' },
+            { src: '/assets/videos/fashion-avenue-shanice-look-3.mp4', poster: '/assets/videos/fashion-avenue-shanice-look-3.jpg', shape: 'vertical', client: 'Portrait Shoot', title: 'Shanice — Alternate Cut', caption: 'The red dress session, re-edited.', duration: '0:54' }
         ]
     }
 };

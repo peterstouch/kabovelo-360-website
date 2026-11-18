@@ -301,3 +301,45 @@ a[class*="from-armyGreen"], button[class*="from-armyGreen"] { position: relative
 .video-card.is-playing .video-live { opacity: 1; transform: none; }
 .video-live > span { animation: dot 1.6s ease-in-out infinite; }
 .video-progress { width: 0; transition: width .25s linear; }
+
+/* Video rail — a swipeable film strip; every card shares one height */
+.video-rail {
+    --rail-h: 25rem;
+    display: flex; gap: 1rem; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: 2px; padding: 2px 2px .5rem;
+    -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 640px) { .video-rail { --rail-h: 29rem; gap: 1.25rem; } }
+@media (min-width: 1280px) { .video-rail { --rail-h: 31rem; } }
+.video-rail:focus-visible { outline: 2px solid #8BAE77; outline-offset: 4px; border-radius: 1rem; }
+.video-card.in-rail { flex: 0 0 auto; scroll-snap-align: start; }
+.video-card.in-rail .video-frame { height: var(--rail-h); width: auto; max-width: min(86vw, 52rem); }
+.video-card .video-frame { width: 100%; }
+
+.rail-arrow {
+    width: 2.75rem; height: 2.75rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; border: 1px solid rgba(255, 255, 255, .15); background: rgba(255, 255, 255, .04);
+    transition: background .25s ease, border-color .25s ease, opacity .25s ease, transform .25s ease;
+}
+.rail-arrow:hover:not(:disabled) { background: #6E915B; border-color: #6E915B; transform: translateY(-1px); }
+.rail-arrow:disabled { opacity: .3; cursor: default; }
+@media (max-width: 639px) { .rail-arrow { display: none !important; } }
+
+.rail-dots { display: flex; justify-content: center; gap: .4rem; margin-top: 1rem; }
+.rail-dots span { width: .4rem; height: .4rem; border-radius: 999px; background: rgba(255, 255, 255, .2); transition: all .35s cubic-bezier(.2, .7, .2, 1); }
+.rail-dots span.is-on { width: 1.5rem; background: #8BAE77; }
+
+/* Compact controls on narrow video cards (e.g. two vertical videos side by side on a phone) */
+.video-frame { container-type: inline-size; }
+@container (max-width: 260px) {
+    .video-live { display: none; }
+    .video-btn { width: 1.85rem; height: 1.85rem; font-size: 10px; }
+    .video-frame figcaption { padding: .75rem; }
+    .video-frame figcaption .font-serif { font-size: .9rem; }
+}
+@container (max-width: 190px) {
+    .video-btn[data-video-play] { display: none; }
+}
+.video-rail.fits { justify-content: center; }
+.video-rail.fits + .rail-dots { display: none; }
+.rail-arrow.hidden { display: none; }
