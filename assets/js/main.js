@@ -435,12 +435,13 @@ function videoShowcaseHTML(divisionKey) {
 }
 
 /** Splits cards into full-width rows for the current width. Returns [{cards, height}]. */
-function justifyVideos(cards, width, gap) {
-    if (width < 480) {
+function justifyVideos(cards, width, gap, opts = {}) {
+    const { desktop = 420, tablet = 300, phone = 0 } = opts;
+    if (width < 480 && !phone) {
         // phones: one full-width video per row, shapes gently normalised
         return cards.map(c => ({ cards: [c], height: width / Math.min(2, Math.max(0.8, +c.dataset.ar)) }));
     }
-    const target = width >= 1024 ? 420 : 300;
+    const target = width >= 1024 ? desktop : width >= 480 ? tablet : phone;
     const maxFor = (row) => target * (row.every(c => c.dataset.shape === 'vertical') ? 1.45 : 1.55); // vertical-only rows may be taller
     const heightFor = (row) => (width - gap * (row.length - 1)) / row.reduce((n, c) => n + +c.dataset.ar, 0);
     const rows = [];
@@ -627,6 +628,204 @@ function initVideos(root = document) {
     root.querySelectorAll('.video-showcase').forEach(setupVideoWall);
 }
 
+// =================================================================
+// PHOTO GALLERIES — justified photo wall, filters, full-screen viewer
+// =================================================================
+const GALLERY_TARGETS = { desktop: 260, tablet: 200, phone: 140 };
+
+function galleryHTML(divisionKey, extraClass = '') {
+    const g = typeof DIVISION_GALLERIES !== 'undefined' && DIVISION_GALLERIES[divisionKey];
+    if (!g || !g.photos.length) return '';
+    const counts = g.groups.map(gr => ({ ...gr, n: g.photos.filter(p => p.group === gr.id).length }));
+    return `
+        <section class="photo-gallery ${extraClass}" data-gallery="${divisionKey}" aria-label="${g.heading}">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+                <div>
+                    <span class="eyebrow">Gallery · ${g.photos.length} photos</span>
+                    <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-white mt-3">${g.heading}</h4>
+                    <p class="text-sm text-greyMuted leading-relaxed mt-2 max-w-xl">${g.intro}</p>
+                </div>
+            </div>
+            ${counts.length > 1 ? `
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-5 -mx-1 px-1" role="tablist" aria-label="Filter photos">
+                <button type="button" class="gallery-chip is-on" data-filter="all" role="tab" aria-selected="true">All <span>${g.photos.length}</span></button>
+                ${counts.map(c => `<button type="button" class="gallery-chip" data-filter="${c.id}" role="tab" aria-selected="false">${c.label} <span>${c.n}</span></button>`).join('')}
+            </div>` : ''}
+            <div class="photo-wall"></div>
+            <div class="mt-6 sm:mt-8 flex justify-center hidden" data-gallery-more-wrap>
+                <button type="button" class="view-all-btn" data-gallery-more aria-expanded="false">
+                    <span data-label>View all photos</span>
+                    <span class="view-all-count"></span>
+                    <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                </button>
+            </div>
+        </section>`;
+}
+
+function initGalleries(root = document) {
+    root.querySelectorAll('.photo-gallery:not([data-ready])').forEach(section => {
+        section.dataset.ready = '1';
+        const g = DIVISION_GALLERIES[section.dataset.gallery];
+        const captionOf = (p) => (g.groups.find(x => x.id === p.group) || {}).caption || g.heading;
+        const state = { filter: 'all', expanded: false, width: 0 };
+        // one card element per photo, reused across filters and layouts
+        const cards = g.photos.map((p, i) => {
+            const ar = p.w / p.h;
+            const el = document.createElement('button');
+            el.type = 'button';
+            el.className = 'photo-card group';
+            el.dataset.ar = ar.toFixed(4);
+            el.dataset.shape = ar < 0.9 ? 'vertical' : 'landscape';
+            el.dataset.index = i;
+            el.setAttribute('aria-label', `Open photo ${i + 1}: ${captionOf(p)}`);
+            el.innerHTML = `<img src="${p.src}" alt="${captionOf(p)}" loading="lazy" decoding="async" width="${p.w}" height="${p.h}">
+                <span class="photo-zoom" aria-hidden="true"><i class="fa-solid fa-expand"></i></span>`;
+            el.addEventListener('click', () => {
+                const list = visible();
+                openPhotoViewer(g, list, list.indexOf(p), captionOf);
+            });
+            return el;
+        });
+        const visible = () => g.photos.filter(p => state.filter === 'all' || p.group === state.filter);
+        const wall = section.querySelector('.photo-wall');
+        const moreWrap = section.querySelector('[data-gallery-more-wrap]');
+        const moreBtn = section.querySelector('[data-gallery-more]');
+
+        const layout = (force = false) => {
+            const width = Math.round(wall.clientWidth);
+            if (!width || (!force && width === state.width)) return;
+            state.width = width;
+            const gap = width >= 640 ? 10 : 6;
+            const list = visible().map(p => cards[g.photos.indexOf(p)]);
+            const rows = justifyVideos(list, width, gap, GALLERY_TARGETS);
+            const preview = width < 480 ? 4 : 3;
+            const frag = document.createDocumentFragment();
+            rows.forEach((r, i) => {
+                const line = document.createElement('div');
+                line.className = 'photo-line' + (i >= preview ? ' is-extra' : '') + (i >= preview && !state.expanded ? ' hidden' : '');
+                line.style.height = `${Math.round(r.height)}px`;
+                line.style.gap = `${gap}px`;
+                r.cards.forEach(c => { c.style.flexGrow = String(Math.round(+c.dataset.ar * 1000) / 10); line.appendChild(c); });
+                frag.appendChild(line);
+            });
+            wall.style.gap = `${gap}px`;
+            wall.replaceChildren(frag);
+            const hiddenCount = rows.slice(preview).reduce((n, r) => n + r.cards.length, 0);
+            moreWrap.classList.toggle('hidden', hiddenCount === 0);
+            moreBtn.querySelector('[data-label]').textContent = state.expanded ? 'Show fewer photos' : `View all ${list.length} photos`;
+            moreBtn.querySelector('.view-all-count').textContent = `+${hiddenCount}`;
+            moreBtn.querySelector('.view-all-count').classList.toggle('hidden', state.expanded);
+            moreBtn.querySelector('i').classList.toggle('rotate-180', state.expanded);
+            moreBtn.setAttribute('aria-expanded', String(state.expanded));
+        };
+
+        section.querySelectorAll('.gallery-chip').forEach(chip => chip.addEventListener('click', () => {
+            section.querySelectorAll('.gallery-chip').forEach(c => { c.classList.toggle('is-on', c === chip); c.setAttribute('aria-selected', String(c === chip)); });
+            state.filter = chip.dataset.filter;
+            state.expanded = false;
+            wall.classList.remove('is-switching'); void wall.offsetWidth; wall.classList.add('is-switching');
+            layout(true);
+        }));
+        moreBtn.addEventListener('click', () => {
+            state.expanded = !state.expanded;
+            wall.querySelectorAll('.photo-line.is-extra').forEach((line, i) => {
+                line.classList.toggle('hidden', !state.expanded);
+                if (state.expanded) { line.style.animationDelay = `${i * 70}ms`; line.classList.add('video-reveal'); } else line.classList.remove('video-reveal');
+            });
+            layout(true);
+            if (!state.expanded) {
+                const top = section.getBoundingClientRect().top;
+                if (top < 0) window.scrollTo({ top: top + scrollY - 100, behavior: 'smooth' });
+            }
+        });
+
+        layout(true);
+        let t;
+        const relayout = () => { clearTimeout(t); t = setTimeout(() => layout(), 150); };
+        if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(wall);
+        else window.addEventListener('resize', relayout);
+    });
+}
+
+// ---- Full-screen photo viewer
+const photoViewer = { g: null, list: [], i: 0, captionOf: null };
+
+function ensurePhotoViewer() {
+    if (document.getElementById('photoViewer')) return;
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="photoViewer" data-modal role="dialog" aria-modal="true" aria-label="Photo viewer" class="fixed inset-0 z-[88] hidden flex-col bg-obsidian/95 backdrop-blur-xl opacity-0 transition-opacity duration-300">
+        <div class="flex items-center justify-between gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div class="min-w-0">
+                <p id="pvCounter" class="text-[11px] font-mono text-greyMuted"></p>
+                <p id="pvCaption" class="text-sm text-white font-semibold truncate"></p>
+            </div>
+            <button type="button" data-pv-close aria-label="Close" class="w-11 h-11 rounded-full bg-white/10 hover:bg-armyGreenBright text-white flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="relative flex-1 min-h-0 flex items-center justify-center px-2 sm:px-20" data-pv-stage>
+            <div class="pv-spinner" aria-hidden="true"></div>
+            <img id="pvImage" alt="" class="relative max-w-full max-h-full object-contain rounded-lg shadow-2xl select-none" draggable="false">
+            <button type="button" data-pv-prev aria-label="Previous photo" class="pv-nav left-2 sm:left-5"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" data-pv-next aria-label="Next photo" class="pv-nav right-2 sm:right-5"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="px-3 sm:px-6 py-3 sm:py-4">
+            <div id="pvThumbs" class="flex gap-2 overflow-x-auto no-scrollbar justify-start sm:justify-center"></div>
+        </div>
+    </div>`);
+    const pv = document.getElementById('photoViewer');
+    pv.querySelector('[data-pv-close]').addEventListener('click', () => closeModalById('photoViewer'));
+    pv.querySelector('[data-pv-prev]').addEventListener('click', () => stepPhoto(-1));
+    pv.querySelector('[data-pv-next]').addEventListener('click', () => stepPhoto(1));
+    pv.querySelector('[data-pv-stage]').addEventListener('click', (e) => { if (e.target.matches('[data-pv-stage]')) closeModalById('photoViewer'); });
+    document.addEventListener('keydown', (e) => {
+        if (pv.classList.contains('hidden')) return;
+        if (e.key === 'ArrowRight') stepPhoto(1);
+        if (e.key === 'ArrowLeft') stepPhoto(-1);
+    });
+    // swipe on touch screens
+    let x0 = null;
+    const stage = pv.querySelector('[data-pv-stage]');
+    stage.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', (e) => {
+        if (x0 === null) return;
+        const dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 45) stepPhoto(dx < 0 ? 1 : -1);
+        x0 = null;
+    });
+}
+
+function openPhotoViewer(g, list, index, captionOf) {
+    ensurePhotoViewer();
+    Object.assign(photoViewer, { g, list, i: Math.max(0, index), captionOf });
+    document.getElementById('pvThumbs').innerHTML = list.map((p, i) => `
+        <button type="button" class="pv-thumb" data-i="${i}" aria-label="Photo ${i + 1}"><img src="${p.src}" alt="" loading="lazy"></button>`).join('');
+    document.querySelectorAll('#pvThumbs .pv-thumb').forEach(b => b.addEventListener('click', () => showPhoto(+b.dataset.i)));
+    openModal('photoViewer');
+    showPhoto(photoViewer.i);
+}
+
+function stepPhoto(dir) {
+    const n = photoViewer.list.length;
+    showPhoto((photoViewer.i + dir + n) % n);
+}
+
+function showPhoto(i) {
+    const { list, captionOf } = photoViewer;
+    photoViewer.i = i;
+    const p = list[i];
+    const img = document.getElementById('pvImage');
+    img.classList.add('is-loading');
+    img.onload = () => img.classList.remove('is-loading');
+    img.src = p.large;
+    img.alt = captionOf(p);
+    document.getElementById('pvCounter').textContent = `${i + 1} / ${list.length}`;
+    document.getElementById('pvCaption').textContent = captionOf(p);
+    document.querySelectorAll('#pvThumbs .pv-thumb').forEach((b, j) => b.classList.toggle('is-on', j === i));
+    const active = document.querySelector(`#pvThumbs .pv-thumb[data-i="${i}"]`);
+    if (active) active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    // preload neighbours so next/previous feel instant
+    [1, -1].forEach(d => { const q = list[(i + d + list.length) % list.length]; if (q) { const pre = new Image(); pre.src = q.large; } });
+}
+
 function releaseVideos(root) {
     root.querySelectorAll('video').forEach(v => { v.pause(); if (videoObserver) videoObserver.unobserve(v); });
 }
@@ -697,6 +896,8 @@ function switchDivision(divisionKey, opts = {}) {
                 </div>
             </div>
 
+            ${galleryHTML(divisionKey, 'mt-12')}
+
             ${detailed && divisionKey === 'film-academy' ? `
             <div class="mt-12">
                 <div class="flex items-end justify-between gap-4 mb-5">
@@ -728,6 +929,7 @@ function switchDivision(divisionKey, opts = {}) {
         container.style.opacity = '1';
         setupReveal(container);
         initVideos(container);
+        initGalleries(container);
     }, 180);
 }
 
@@ -1083,6 +1285,8 @@ async function sendInquiry(payload) {
 
 // ---- Impact page
 function initImpact() {
+    const gSlot = document.getElementById('impactGallery');
+    if (gSlot) { gSlot.innerHTML = galleryHTML('hope-foundation'); initGalleries(gSlot); }
     initCounters();
     renderFounderSpotlight();
     const hope = WORK_PROJECTS.filter(p => p.division === 'hope-foundation');

@@ -8,3 +8,5 @@ api/.wrangler/
 api/.dev.vars
 # Original full-size videos — the site uses compressed copies in assets/videos/
 assets/images/videos/
+# Original full-size gallery photos — the site uses web copies in assets/images/gallery/
+assets/images/originals/

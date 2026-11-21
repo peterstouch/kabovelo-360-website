@@ -36,6 +36,7 @@ All links and images use root paths (`/assets/...`), so the site must be served 
 - **Founder name & bio:** edit `FOUNDER` in `assets/js/data.js`
 - **Demo work → real work:** edit `WORK_PROJECTS` in `assets/js/data.js` (same fields; pages update automatically)
 - **Division videos:** put the compressed `.mp4` + poster `.jpg` in `assets/videos/` and list them in `DIVISION_VIDEOS` in `assets/js/data.js`. They autoplay muted (only while on screen) above the division's services. Keep each video under ~10 MB (960px, ~2.5 Mbps); originals stay in `assets/images/videos/`, which is not uploaded.
+- **Photo galleries:** web copies live in `assets/images/gallery/<division>/` (900px for the grid, `-lg` 2000px for full screen) and are listed in `DIVISION_GALLERIES` in `assets/js/data.js`. Originals are kept in `assets/images/originals/`, which is not uploaded.
 - **Client logos:** add the file to `assets/images/clients/` and an entry to `CLIENTS`
 - **Navigation / social links:** `NAV_LINKS` and `SOCIAL_LINKS` at the top of `assets/js/layout.js`
 
